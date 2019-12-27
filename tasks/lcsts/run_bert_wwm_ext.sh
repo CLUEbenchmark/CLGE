@@ -8,7 +8,7 @@ CURRENT_DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 export CUDA_VISIBLE_DEVICES="1"
 export BERT_PRETRAINED_MODELS_DIR=$CURRENT_DIR/../../prev_trained_model
 export BERT_BASE_DIR=$BERT_PRETRAINED_MODELS_DIR/$MODEL_NAME
-export GLUE_DATA_DIR=$CURRENT_DIR/../../LGECdataset
+export GLUE_DATA_DIR=$CURRENT_DIR/../../CLGEdataset
 
 # check python package 
 check_bert4keras=`pip show bert4keras | grep "Version"`
