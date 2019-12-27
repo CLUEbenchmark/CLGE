@@ -9,7 +9,6 @@ from keras.layers import *
 from keras.models import Model
 from keras import backend as K
 from keras.callbacks import Callback
-from bert4keras.snippets import parallel_apply
 from keras.optimizers import Adam
 from rouge import Rouge
 import keras
@@ -47,6 +46,7 @@ def padding(x):
     """
     ml = max([len(i) for i in x])
     return np.array([i + [0] * (ml - len(i)) for i in x])
+
 
 
 class DataGenerator(keras.utils.Sequence):
@@ -96,7 +96,8 @@ class DataGenerator(keras.utils.Sequence):
         return padding(batch_x),padding(batch_y)
 
 
-def get_model(config_path,checkpoint_path,keep_words,albert=False,lr = 1e-5):
+
+def get_model(config_path,checkpoint_path,albert=False,lr = 1e-5):
     
     if albert==True:
         print("Using Albert!")
@@ -105,7 +106,6 @@ def get_model(config_path,checkpoint_path,keep_words,albert=False,lr = 1e-5):
         config_path=config_path,
         checkpoint_path=checkpoint_path,
         application='seq2seq',
-        keep_words=keep_words,
         albert=albert
     )
 
@@ -127,8 +127,7 @@ def gen_sent(s, topk=2):
     """beam search解码
     每次只保留topk个最优候选结果；如果topk=1，那么就是贪心搜索
     """
-    content_len = max_input_len - max_output_len
-    token_ids, segment_ids = tokenizer.encode(s[:content_len])
+    token_ids, segment_ids = tokenizer.encode(s[:max_input_len])
     target_ids = [[] for _ in range(topk)]  # 候选答案id
     target_scores = [0] * topk  # 候选答案分数
     for i in range(max_output_len):  # 强制要求输出不超过max_output_len字
@@ -151,10 +150,11 @@ def gen_sent(s, topk=2):
         target_ids = [_candidate_ids[k] for k in _topk_arg]
         target_scores = [_candidate_scores[k] for k in _topk_arg]
         best_one = np.argmax(target_scores)
-        if target_ids[best_one][-1] == 3:
+        if target_ids[best_one][-1] == sep_id:
             return tokenizer.decode(target_ids[best_one])
     # 如果max_output_len字都找不到结束符，直接返回
     return tokenizer.decode(target_ids[np.argmax(target_scores)])
+
 
 def just_show():
     if sample_path == None:
@@ -185,10 +185,11 @@ class Evaluate(keras.callbacks.Callback):
         print("rouge-l scores: ",np.mean(rouge_scores))
 
 
+
 config_path = args.config_path
 checkpoint_path = args.checkpoint_path
 dict_path = args.dict_path
-sample_path = args.sample_path
+
 
 min_count = 0
 max_input_len = args.max_input_len
@@ -200,78 +201,23 @@ topk = args.topk
 train_data_path = args.train_data_path
 val_data_path = args.val_data_path
 
-_token_dict = load_vocab(dict_path)  # 读取词典
-_tokenizer = Tokenizer(_token_dict, do_lower_case=True)  # 建立临时分词器
 
 
-def read_texts():
-    txts = [train_data_path, val_data_path]
-    for txt in txts:
-        lines = open(txt).readlines()
-        for line in lines:
-            d = line.split('\t')
-            yield d[1][:max_input_len], d[0]
+token_dict = load_vocab(dict_path)  # 读取词典
 
-def _batch_texts():
-    texts = []
-    for text in read_texts():
-        texts.extend(text)
-        if len(texts) >= 1000:
-            yield texts
-            texts = []
-    if texts:
-        yield texts
+tokenizer = Tokenizer(token_dict, do_lower_case=True) # 建立分词器
 
-def _tokenize_and_count(texts):
-    _tokens = {}
-    for text in texts:
-        for token in _tokenizer.tokenize(text):
-            _tokens[token] = _tokens.get(token, 0) + 1
-    return _tokens
-
-tokens = {}
-
-def _total_count(result):
-    for k, v in result.items():
-        tokens[k] = tokens.get(k, 0) + v
-
-# 词频统计
-parallel_apply(
-    func=_tokenize_and_count,
-    iterable=tqdm(_batch_texts(), desc=u'构建词汇表中'),
-    workers=10,
-    max_queue_size=500,
-    callback=_total_count,
-)
-
-tokens = [(i, j) for i, j in tokens.items() if j >= min_count]
-tokens = sorted(tokens, key=lambda t: -t[1])
-tokens = [t[0] for t in tokens]
-
-token_dict, keep_words = {}, []  # keep_words是在bert中保留的字表
-
-for t in ['[PAD]', '[UNK]', '[CLS]', '[SEP]']:
-    token_dict[t] = len(token_dict)
-    keep_words.append(_token_dict[t])
-
-for t in tokens:
-    if t in _token_dict and t not in token_dict:
-        token_dict[t] = len(token_dict)
-        keep_words.append(_token_dict[t])
-
-tokenizer = Tokenizer(token_dict, do_lower_case=True)  # 建立分词器
-
+sep_id = tokenizer.encode('')[0][-1]
 
 rouge = Rouge()        
-model = get_model(config_path, checkpoint_path, keep_words, args.albert, args.lr)
+model = get_model(config_path, checkpoint_path, args.albert, args.lr)
 
 evaluator = Evaluate(val_data_path, topk)
 
 model.fit_generator(
     DataGenerator(train_data_path,batch_size),
     epochs=epochs,
-    callbacks=[evaluator],
-    verbose = 1
+    callbacks=[evaluator]
 )
 
 

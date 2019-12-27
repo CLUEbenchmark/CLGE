@@ -2,10 +2,10 @@
 # @Author: Li Yudong
 # @Date:   2019-12-23
 
-TASK_NAME="csl"
-MODEL_NAME="albert_tiny_zh_google"
+TASK_NAME="lcsts" 
+MODEL_NAME="chinese_wwm_ext_L-12_H-768_A-12"
 CURRENT_DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
-export CUDA_VISIBLE_DEVICES="0"
+export CUDA_VISIBLE_DEVICES="1"
 export BERT_PRETRAINED_MODELS_DIR=$CURRENT_DIR/../../prev_trained_model
 export BERT_BASE_DIR=$BERT_PRETRAINED_MODELS_DIR/$MODEL_NAME
 export GLUE_DATA_DIR=$CURRENT_DIR/../../LGECdataset
@@ -36,9 +36,9 @@ fi
 cd $GLUE_DATA_DIR/$TASK_NAME
 if [ ! -f "train.tsv" ] || [ ! -f "val.tsv" ] ; then
   echo "Data does not exist."
-  exit
+else
+  echo "Dataset exists."
 fi
-echo "Dataset exists."
 
 # download model
 if [ ! -d $BERT_PRETRAINED_MODELS_DIR ]; then
@@ -47,21 +47,17 @@ if [ ! -d $BERT_PRETRAINED_MODELS_DIR ]; then
 fi
 cd $BERT_PRETRAINED_MODELS_DIR
 if [ ! -d $MODEL_NAME ]; then
-  mkdir $MODEL_NAME
-  cd $MODEL_NAME
-  wget https://storage.googleapis.com/albert_zh/albert_tiny_zh_google.zip
-  unzip albert_tiny_zh_google.zip
-  rm albert_tiny_zh_google.zip
+  wget https://storage.googleapis.com/bert_models/2018_11_03/chinese_L-12_H-768_A-12.zip
+  unzip chinese_L-12_H-768_A-12.zip
+  rm chinese_L-12_H-768_A-12.zip
 else
   cd $MODEL_NAME
-  if [ ! -f "albert_config_tiny_g.json" ] || [ ! -f "vocab.txt" ] || [ ! -f "albert_model.ckpt.index" ] || [ ! -f "albert_model.ckpt.meta" ] || [ ! -f "albert_model.ckpt.data-00000-of-00001" ]; then
+  if [ ! -f "bert_config.json" ] || [ ! -f "vocab.txt" ] || [ ! -f "bert_model.ckpt.index" ] || [ ! -f "bert_model.ckpt.meta" ] || [ ! -f "bert_model.ckpt.data-00000-of-00001" ]; then
     cd ..
     rm -rf $MODEL_NAME
-    mkdir $MODEL_NAME
-    cd $MODEL_NAME
-    wget https://storage.googleapis.com/albert_zh/albert_tiny_zh_google.zip
-    unzip albert_tiny_zh_google.zip
-    rm albert_tiny_zh_google.zip
+    wget https://storage.googleapis.com/bert_models/2018_11_03/chinese_L-12_H-768_A-12.zip
+    unzip chinese_L-12_H-768_A-12.zip
+    rm chinese_L-12_H-768_A-12.zip
   else
     echo "model exists"
   fi
@@ -72,15 +68,15 @@ cd $CURRENT_DIR
 echo "Start running..."
 python ../summary_baseline.py \
     --dict_path=$BERT_BASE_DIR/vocab.txt \
-    --config_path=$BERT_BASE_DIR/albert_config_tiny_g.json \
-    --checkpoint_path=$BERT_BASE_DIR/albert_model.ckpt \
+    --config_path=$BERT_BASE_DIR/bert_config.json \
+    --checkpoint_path=$BERT_BASE_DIR/bert_model.ckpt \
     --train_data_path=$GLUE_DATA_DIR/$TASK_NAME/train.tsv \
     --val_data_path=$GLUE_DATA_DIR/$TASK_NAME/val.tsv \
     --sample_path=$GLUE_DATA_DIR/$TASK_NAME/sample.tsv \
-    --albert=True \
-    --epochs=10 \
-    --batch_size=8 \
+    --albert=False \
+    --epochs=30 \
+    --batch_size=16 \
     --lr=1e-5 \
     --topk=1 \
-    --max_input_len=256 \
+    --max_input_len=128 \
     --max_output_len=32

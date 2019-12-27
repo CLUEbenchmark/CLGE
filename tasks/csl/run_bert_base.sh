@@ -14,9 +14,13 @@ export GLUE_DATA_DIR=$CURRENT_DIR/../../LGECdataset
 check_bert4keras=`pip show bert4keras | grep "Version"`
 
 if [ ! -n "$check_bert4keras" ]; then
-  pip install git+https://www.github.com/bojone/bert4keras.git@v0.2.6
+  pip install git+https://www.github.com/bojone/bert4keras.git@v0.3.6
 else
-  echo "bert4keras installed."
+  if [  ${check_bert4keras:8:13} = '0.3.6' ] ; then
+    echo "bert4keras installed."
+  else
+    pip install git+https://www.github.com/bojone/bert4keras.git@v0.3.6
+  fi
 fi
 
 check_rouge=`pip show rouge | grep "Version"`
@@ -32,6 +36,7 @@ fi
 cd $GLUE_DATA_DIR/$TASK_NAME
 if [ ! -f "train.tsv" ] || [ ! -f "val.tsv" ] ; then
   echo "Data does not exist."
+  exit
 else
   echo "Dataset exists."
 fi
@@ -62,14 +67,15 @@ fi
 # run task
 cd $CURRENT_DIR
 echo "Start running..."
-python ../summary_baseline.py \
+python ../summary_baseline_full_token.py \
     --dict_path=$BERT_BASE_DIR/vocab.txt \
     --config_path=$BERT_BASE_DIR/bert_config.json \
     --checkpoint_path=$BERT_BASE_DIR/bert_model.ckpt \
     --train_data_path=$GLUE_DATA_DIR/$TASK_NAME/train.tsv \
     --val_data_path=$GLUE_DATA_DIR/$TASK_NAME/val.tsv \
+    --sample_path=$GLUE_DATA_DIR/$TASK_NAME/sample.tsv \
     --albert=False \
-    --epochs=3 \
+    --epochs=10 \
     --batch_size=8 \
     --lr=1e-5 \
     --topk=1 \

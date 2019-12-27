@@ -2,12 +2,12 @@
 # @Author: Li Yudong
 # @Date:   2019-12-23
 
-TASK_NAME="csl"
-MODEL_NAME="chinese_wwm_ext_L-12_H-768_A-12"
+TASK_NAME="lcsts" 
+MODEL_NAME="chinese_roberta_wwm_ext_L-12_H-768_A-12"
 CURRENT_DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 export CUDA_VISIBLE_DEVICES="0"
-export BERT_PRETRAINED_MODELS_DIR=$CURRENT_DIR/../../prev_trained_model
-export BERT_WWM_BASE_DIR=$BERT_PRETRAINED_MODELS_DIR/$MODEL_NAME
+export PRETRAINED_MODELS_DIR=$CURRENT_DIR/../../prev_trained_model
+export ROBERTA_WWM_DIR=$PRETRAINED_MODELS_DIR/$MODEL_NAME
 export GLUE_DATA_DIR=$CURRENT_DIR/../../LGECdataset
 
 # check python package 
@@ -36,21 +36,21 @@ fi
 cd $GLUE_DATA_DIR/$TASK_NAME
 if [ ! -f "train.tsv" ] || [ ! -f "val.tsv" ] ; then
   echo "Data does not exist."
-  exit
+else
+  echo "Dataset exists."
 fi
-echo "Dataset exists."
 
 # download model
-if [ ! -d $BERT_WWM_BASE_DIR ]; then
-  mkdir -p $BERT_WWM_BASE_DIR
-  echo "makedir $BERT_WWM_BASE_DIR"
+if [ ! -d $ROBERTA_WWM_DIR ]; then
+  mkdir -p $ROBERTA_WWM_DIR
+  echo "makedir $ROBERTA_WWM_DIR"
 fi
-cd $BERT_WWM_BASE_DIR
+cd $ROBERTA_WWM_DIR
 if [ ! -f "bert_config.json" ] || [ ! -f "vocab.txt" ] || [ ! -f "bert_model.ckpt.index" ] || [ ! -f "bert_model.ckpt.meta" ] || [ ! -f "bert_model.ckpt.data-00000-of-00001" ]; then
   rm *
-  wget -c https://storage.googleapis.com/chineseglue/pretrain_models/chinese_wwm_ext_L-12_H-768_A-12.zip
-  unzip chinese_wwm_ext_L-12_H-768_A-12.zip
-  rm chinese_wwm_ext_L-12_H-768_A-12.zip
+  wget -c https://storage.googleapis.com/chineseglue/pretrain_models/chinese_roberta_wwm_ext_L-12_H-768_A-12.zip
+  unzip chinese_roberta_wwm_ext_L-12_H-768_A-12.zip
+  rm chinese_roberta_wwm_ext_L-12_H-768_A-12.zip
 else
   echo "model exists"
 fi
@@ -60,16 +60,16 @@ echo "Finish download model."
 cd $CURRENT_DIR
 echo "Start running..."
 python ../summary_baseline.py \
-    --dict_path=$BERT_WWM_BASE_DIR/vocab.txt \
-    --config_path=$BERT_WWM_BASE_DIR/bert_config.json \
-    --checkpoint_path=$BERT_WWM_BASE_DIR/bert_model.ckpt \
+    --dict_path=$ROBERTA_WWM_DIR/vocab.txt \
+    --config_path=$ROBERTA_WWM_DIR/bert_config.json \
+    --checkpoint_path=$ROBERTA_WWM_DIR/bert_model.ckpt \
     --train_data_path=$GLUE_DATA_DIR/$TASK_NAME/train.tsv \
     --val_data_path=$GLUE_DATA_DIR/$TASK_NAME/val.tsv \
     --sample_path=$GLUE_DATA_DIR/$TASK_NAME/sample.tsv \
     --albert=False \
-    --epochs=10 \
-    --batch_size=8 \
-    --lr=1e-5 \
+    --epochs=30 \
+    --batch_size=16 \
+    --lr=2e-5 \
     --topk=1 \
-    --max_input_len=256 \
-    --max_output_len=32
+    --max_input_len=128 \
+    --max_output_len=24

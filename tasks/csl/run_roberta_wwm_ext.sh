@@ -5,7 +5,7 @@
 TASK_NAME="csl" 
 MODEL_NAME="chinese_roberta_wwm_ext_L-12_H-768_A-12"
 CURRENT_DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
-export CUDA_VISIBLE_DEVICES="0"
+export CUDA_VISIBLE_DEVICES="1"
 export PRETRAINED_MODELS_DIR=$CURRENT_DIR/../../prev_trained_model
 export ROBERTA_WWM_DIR=$PRETRAINED_MODELS_DIR/$MODEL_NAME
 export GLUE_DATA_DIR=$CURRENT_DIR/../../LGECdataset
@@ -14,9 +14,13 @@ export GLUE_DATA_DIR=$CURRENT_DIR/../../LGECdataset
 check_bert4keras=`pip show bert4keras | grep "Version"`
 
 if [ ! -n "$check_bert4keras" ]; then
-  pip install git+https://www.github.com/bojone/bert4keras.git@v0.2.6
+  pip install git+https://www.github.com/bojone/bert4keras.git@v0.3.6
 else
-  echo "bert4keras installed."
+  if [  ${check_bert4keras:8:13} = '0.3.6' ] ; then
+    echo "bert4keras installed."
+  else
+    pip install git+https://www.github.com/bojone/bert4keras.git@v0.3.6
+  fi
 fi
 
 check_rouge=`pip show rouge | grep "Version"`
@@ -61,8 +65,9 @@ python ../summary_baseline.py \
     --checkpoint_path=$ROBERTA_WWM_DIR/bert_model.ckpt \
     --train_data_path=$GLUE_DATA_DIR/$TASK_NAME/train.tsv \
     --val_data_path=$GLUE_DATA_DIR/$TASK_NAME/val.tsv \
+    --sample_path=$GLUE_DATA_DIR/$TASK_NAME/sample.tsv \
     --albert=False \
-    --epochs=3 \
+    --epochs=10 \
     --batch_size=8 \
     --lr=1e-5 \
     --topk=1 \
