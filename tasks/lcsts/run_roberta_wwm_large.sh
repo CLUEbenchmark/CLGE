@@ -1,22 +1,26 @@
 #!/usr/bin/env bash
 # @Author: Li Yudong
-# @Date:   2019-12-23
+# @Date:   2019-12-27
 
-TASK_NAME="csl" 
-MODEL_NAME="baidu_ernie"
+TASK_NAME="lcsts"
+MODEL_NAME="chinese_roberta_wwm_large_ext_L-24_H-1024_A-16"
 CURRENT_DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 export CUDA_VISIBLE_DEVICES="0"
 export PRETRAINED_MODELS_DIR=$CURRENT_DIR/../../prev_trained_model
-export ERNIE_DIR=$PRETRAINED_MODELS_DIR/$MODEL_NAME
+export ROBERTA_WWM_LARGE_DIR=$PRETRAINED_MODELS_DIR/$MODEL_NAME
 export GLUE_DATA_DIR=$CURRENT_DIR/../../LGECdataset
 
-# check python package 
+# check python package
 check_bert4keras=`pip show bert4keras | grep "Version"`
 
 if [ ! -n "$check_bert4keras" ]; then
-  pip install git+https://www.github.com/bojone/bert4keras.git@v0.2.6
+  pip install git+https://www.github.com/bojone/bert4keras.git@v0.3.6
 else
-  echo "bert4keras installed."
+  if [  ${check_bert4keras:8:13} = '0.3.6' ] ; then
+    echo "bert4keras installed."
+  else
+    pip install git+https://www.github.com/bojone/bert4keras.git@v0.3.6
+  fi
 fi
 
 check_rouge=`pip show rouge | grep "Version"`
@@ -37,16 +41,16 @@ else
 fi
 
 # download model
-if [ ! -d $ERNIE_DIR ]; then
-  mkdir -p $ERNIE_DIR
-  echo "makedir $ERNIE_DIR"
+if [ ! -d $ROBERTA_WWM_LARGE_DIR ]; then
+  mkdir -p $ROBERTA_WWM_LARGE_DIR
+  echo "makedir $ROBERTA_WWM_LARGE_DIR"
 fi
-cd $ERNIE_DIR
+cd $ROBERTA_WWM_LARGE_DIR
 if [ ! -f "bert_config.json" ] || [ ! -f "vocab.txt" ] || [ ! -f "bert_model.ckpt.index" ] || [ ! -f "bert_model.ckpt.meta" ] || [ ! -f "bert_model.ckpt.data-00000-of-00001" ]; then
   rm *
-  wget https://storage.googleapis.com/chineseglue/pretrain_models/baidu_ernie.zip
-  unzip baidu_ernie.zip
-  rm baidu_ernie.zip
+  wget -c https://storage.googleapis.com/chineseglue/pretrain_models/chinese_roberta_wwm_large_ext_L-24_H-1024_A-16.zip
+  unzip chinese_roberta_wwm_large_ext_L-24_H-1024_A-16.zip
+  rm chinese_roberta_wwm_large_ext_L-24_H-1024_A-16.zip
 else
   echo "model exists"
 fi
@@ -56,15 +60,16 @@ echo "Finish download model."
 cd $CURRENT_DIR
 echo "Start running..."
 python ../summary_baseline.py \
-    --dict_path=$ERNIE_DIR/vocab.txt \
-    --config_path=$ERNIE_DIR/bert_config.json \
-    --checkpoint_path=$ERNIE_DIR/bert_model.ckpt \
+    --dict_path=$ROBERTA_WWM_LARGE_DIR/vocab.txt \
+    --config_path=$ROBERTA_WWM_LARGE_DIR/bert_config.json \
+    --checkpoint_path=$ROBERTA_WWM_LARGE_DIR/bert_model.ckpt \
     --train_data_path=$GLUE_DATA_DIR/$TASK_NAME/train.tsv \
     --val_data_path=$GLUE_DATA_DIR/$TASK_NAME/val.tsv \
+    --sample_path=$GLUE_DATA_DIR/$TASK_NAME/sample.tsv \
     --albert=False \
-    --epochs=3 \
-    --batch_size=8 \
+    --epochs=10 \
+    --batch_size=1 \
     --lr=1e-5 \
     --topk=1 \
-    --max_input_len=256 \
-    --max_output_len=32
+    --max_input_len=128 \
+    --max_output_len=24
