@@ -67,5 +67,8 @@ Rouge-L 根据生成文本和参考文本的最长公共子序列（LCS）得出
 |       BERT-base       |    35.59     | batch_size=16, length=128, epoch=5, lr=1e-5  |
 |     BERT-wwm-ext      |    35.33     |  batch_size=16, length=128, epoch=5, lr=1e-5 |
 |    RoBERTa-wwm-ext    |    36.11     |  batch_size=16, length=128, epoch=5, lr=1e-5 |
-|   RoBERTa-wwm-large   |    -     |  batch_size=8, length=128, epoch=10, lr=1e-5 |
+|   RoBERTa-wwm-large   |    35.05     |  batch_size=8, length=128, epoch=8, lr=1e-5 |
 
+
+## Reference
+[1] bert4keras：https://github.com/bojone/bert4keras
