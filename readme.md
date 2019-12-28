@@ -28,7 +28,7 @@ Rouge-L 根据生成文本和参考文本的最长公共子序列（LCS）得出
 
 1. CSL 中长文本摘要生成 
 
-取自中文科技文献数据(CSL)，选取 10k 条计算机相关领域论文及其标题作为训练集。
+取自[中文科技文献数据(CSL)](https://github.com/P01son6415/chinese-scientific-literature-dataset)，选取 10k 条计算机相关领域论文及其标题作为训练集。
  
 [运行结果](docs/csl.md)
 ```
@@ -71,4 +71,5 @@ Rouge-L 根据生成文本和参考文本的最长公共子序列（LCS）得出
 
 
 ## Reference
+
 [1] bert4keras：https://github.com/bojone/bert4keras
