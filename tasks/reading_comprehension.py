@@ -265,9 +265,9 @@ class Evaluate(keras.callbacks.Callback):
         print('rouge-L:',np.mean(rouge_l_scores))
 
 
-evaluator = Evaluate(val_data_path)
+evaluator = Evaluate(args.val_data_path)
 
-train_D = data_generator(train_data, batch_size)
+train_D = data_generator(train_data, args.batch_size)
 
 model.fit_generator(train_D.forfit(),
                     steps_per_epoch=len(train_D),

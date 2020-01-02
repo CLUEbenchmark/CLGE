@@ -35,8 +35,10 @@ fi
 
 cd $GLUE_DATA_DIR/$TASK_NAME
 if [ ! -f "train.tsv" ] || [ ! -f "val.tsv" ] ; then
-  echo "Data does not exist."
-  exit
+  echo "Downloading data."
+  curl --ftp-skip-pasv-ip ftp://114.115.129.128/CLGE/lcsts.zip > lcsts.zip
+  unzip lcsts.zip
+  rm lcsts.zip
 fi
 echo "Dataset exists."
 

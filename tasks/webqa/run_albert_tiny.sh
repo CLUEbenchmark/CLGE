@@ -34,9 +34,11 @@ fi
 # check dataset
 
 cd $GLUE_DATA_DIR/$TASK_NAME
-if [ ! -f "train.tsv" ] || [ ! -f "val.tsv" ] ; then
-  echo "Data does not exist."
-  exit
+if [ ! -f "train.json" ] || [ ! -f "val.json" ] ; then
+  echo "Downloading data."
+  curl --ftp-skip-pasv-ip ftp://114.115.129.128/CLGE/webqa.zip > webqa.zip
+  unzip webqa.zip
+  rm webqa.zip
 fi
 echo "Dataset exists."
 
