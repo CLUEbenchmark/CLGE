@@ -7,6 +7,7 @@ from bert4keras.optimizers import Adam
 from bert4keras.snippets import sequence_padding
 import codecs, re
 from rouge import Rouge
+import argparse
 
 def boolean_string(s):
     if s not in {'False', 'True', 'false' ,'true'}:
