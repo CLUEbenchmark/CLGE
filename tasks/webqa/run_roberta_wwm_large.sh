@@ -70,8 +70,8 @@ python ../reading_comprehension.py \
     --val_data_path=$GLUE_DATA_DIR/$TASK_NAME/val.tsv \
     --sample_path=$GLUE_DATA_DIR/$TASK_NAME/sample.tsv \
     --albert=False \
-    --epochs=10 \
-    --batch_size=8 \
+    --epochs=5 \
+    --batch_size=4 \
     --lr=1e-5 \
     --topk=1 \
     --max_p_len=256 \
