@@ -76,9 +76,9 @@ python ../reading_comprehension.py \
     --dict_path=$BERT_BASE_DIR/vocab.txt \
     --config_path=$BERT_BASE_DIR/albert_config_tiny_g.json \
     --checkpoint_path=$BERT_BASE_DIR/albert_model.ckpt \
-    --train_data_path=$GLUE_DATA_DIR/$TASK_NAME/train.tsv \
-    --val_data_path=$GLUE_DATA_DIR/$TASK_NAME/val.tsv \
-    --sample_path=$GLUE_DATA_DIR/$TASK_NAME/sample.tsv \
+    --train_data_path=$GLUE_DATA_DIR/$TASK_NAME/train.json \
+    --val_data_path=$GLUE_DATA_DIR/$TASK_NAME/val.json \
+    --sample_path=$GLUE_DATA_DIR/$TASK_NAME/sample.json \
     --albert=True \
     --epochs=5 \
     --batch_size=8 \

@@ -66,9 +66,9 @@ python ../reading_comprehension.py \
     --dict_path=$ROBERTA_WWM_LARGE_DIR/vocab.txt \
     --config_path=$ROBERTA_WWM_LARGE_DIR/bert_config.json \
     --checkpoint_path=$ROBERTA_WWM_LARGE_DIR/bert_model.ckpt \
-    --train_data_path=$GLUE_DATA_DIR/$TASK_NAME/train.tsv \
-    --val_data_path=$GLUE_DATA_DIR/$TASK_NAME/val.tsv \
-    --sample_path=$GLUE_DATA_DIR/$TASK_NAME/sample.tsv \
+    --train_data_path=$GLUE_DATA_DIR/$TASK_NAME/train.json \
+    --val_data_path=$GLUE_DATA_DIR/$TASK_NAME/val.json \
+    --sample_path=$GLUE_DATA_DIR/$TASK_NAME/sample.json \
     --albert=False \
     --epochs=5 \
     --batch_size=4 \
