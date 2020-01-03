@@ -18,10 +18,9 @@ Chinese Language Generation Evaluation 中文生成任务基准测评
 
 ## 评价指标
 
-1. Rouge-L
+**1. Rouge-L**
 
 Rouge-L 根据生成文本和参考文本的最长公共子序列（LCS）得出测评分数。
-
 python rouge 只适用于英文，使用 BERT Tokenizer 将中文转换为数字 id 再计算得分。
 
 
