@@ -48,7 +48,7 @@ python rouge 只适用于英文，使用 BERT Tokenizer 将中文转换为数字
 |     BERT-wwm-ext      |    66.78     |  batch_size=8, length=256, epoch=10, lr=1e-5 |
 |    RoBERTa-wwm-ext    |    66.91     |  batch_size=8, length=256, epoch=10, lr=1e-5 |
 |   RoBERTa-wwm-large   |    68.10     |  batch_size=4, length=256, epoch=10, lr=1e-5 |
-
+|     LSTM-Seq2Seq      |    43.77     |  batch_size=64, length=400, epoch=10, lr=1e-5 |
 
 ### **2. LCSTS 短文本摘要生成**
 
