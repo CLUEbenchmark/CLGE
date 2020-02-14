@@ -26,6 +26,11 @@ test = pd.read_csv(
 )
 #test.head(5)
 
+Sample_PATH = '/openbayes/home/CLGE/CLGEdataset/csl/sample.tsv'
+sample1 = pd.read_csv(
+    Sample_PATH , sep = "\t" , names = ['title','content']
+)
+
 min_count = 32
 maxlen = 400
 batch_size = 64
@@ -452,8 +457,8 @@ class Evaluate(Callback):
         self.lowest1 = 1e10
     def on_epoch_end(self, epoch, logs=None):
         # 训练过程中观察一两个例子，显示标题质量提高的过程
-        print (gen_sent(s))
-        print (gen_sent(s1))
+        for a,b in sample1.iterrows():
+            print('生成标题: ',gen_sent(b['title']))
         # 保存最优结果
         if logs['loss'] <= self.lowest:
             self.lowest = logs['loss']
