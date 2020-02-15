@@ -92,7 +92,8 @@ else:
     char2id = {j:i for i,j in id2char.items()}
     json.dump([chars,id2char,char2id], open('seq2seq_config.json', 'w'))
 
-print(chars[:30])
+for i in chars:        
+    print(i)
     
 def str2id(s, start_end=False):
     # 文字转整数id
