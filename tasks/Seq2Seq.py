@@ -1,6 +1,5 @@
 import numpy as np
 from tqdm import tqdm
-#import pymongo
 import pandas as pd
 import os,json
 import tensorflow as tf
@@ -27,18 +26,13 @@ parser.add_argument('--max_input_len', default=128, type=int, required=False, he
 parser.add_argument('--max_output_len', default=64, type=int, required=False, help='最大输出长度')
 args = parser.parse_args()
 
-train_data_path = args.train_data_path
-val_data_path = args.val_data_path
-sample_path = args.sample_path
-
 lr = args.lr
 topk = args.topk
-max_input_len = args.max_input_len
-max_output_len = args.max_output_len
 
 TRAIN_PATH = args.train_data_path
 TEST_PATH = args.val_data_path
 Sample_PATH = args.sample_path
+
 maxlen = args.max_input_len
 batch_size = args.batch_size
 epochs = args.epochs
@@ -46,8 +40,7 @@ epochs = args.epochs
 db = pd.read_csv(
     TRAIN_PATH,sep="\t",names=['title','content']
 )
-#print(db[:5])
-#print('实验中')
+
 test = pd.read_csv(
     TEST_PATH , sep = "\t" , names = ['title','content']
 )
@@ -64,16 +57,15 @@ z_dim = 128
 def add_one(x):
      return x + 1
 
-    
 chars = {}
 for a in db['title'].items():
     for w in a[1:2] :
-        for q in w:
+        for q in w :
             chars[q] = chars.get(q,0) + 1
             print(chars[q])
 for b in db['content'].items():
     for w in b[1:2] :
-         for q in w:
+         for q in w :
             chars[q] = chars.get(q,0) + 1
    
 chars = {i:j for i,j in chars.items() if j >= min_count}
@@ -122,9 +114,6 @@ def data_generator():
                 yield [X,Y], None
                 X,Y = [],[]
  
-#for a,b in zip(db['content'].items(),db['title'].items()):
-#    print(str2id(a[1]))
-
 def to_one_hot(x):
     """输出一个词表大小的向量，来标记该词是否在文章出现过
     """
@@ -170,10 +159,6 @@ def seq_padding(X, padding=0):
     return np.array([
         np.concatenate([x, [padding] * (ML - len(x))]) if len(x) < ML else x for x in X
     ])
-
-#for i,a in db['title'].items() if i<=10:
-#    print(a)
-
 
 
 def fk():
