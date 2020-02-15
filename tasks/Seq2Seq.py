@@ -30,34 +30,21 @@ args = parser.parse_args()
 train_data_path = args.train_data_path
 val_data_path = args.val_data_path
 sample_path = args.sample_path
-epochs = args.epochs
-batch_size = args.batch_size
+
 lr = args.lr
 topk = args.topk
 max_input_len = args.max_input_len
 max_output_len = args.max_output_len
 
-#TRAIN_PATH = '/openbayes/home/CLGE/CLGEdataset/csl/train.tsv'
-db = pd.read_csv(
-    train_data_path,sep="\t",names=['title','content']
-)
-db.head(20)
+TRAIN_PATH = args.train_data_path
+TEST_PATH = args.val_data_path
+Sample_PATH = args.sample_path
+maxlen = args.max_input_len
+batch_size = args.batch_size
+epochs = args.epochs
 
-#TEST_PATH = '/openbayes/home/CLGE/CLGEdataset/csl/val.tsv'
-test = pd.read_csv(
-    val_data_path , sep = "\t" , names = ['title','content']
-)
-#test.head(5)
-
-#Sample_PATH = '/openbayes/home/CLGE/CLGEdataset/csl/sample.tsv'
-sample1 = pd.read_csv(
-    sample_path , sep = "\t" , names = ['title','content']
-)
 
 min_count = 32
-maxlen = 400
-batch_size = 64
-epochs = 100
 char_size = 128
 z_dim = 128
 
@@ -189,7 +176,7 @@ def fk():
                 testY = np.array(padding(testY))
                 yield [testX,testY], None
                 testX,testY= [],[]
-    
+   
 class ScaleShift(Layer):
     """缩放平移变换层（Scale and shift）
     """
@@ -267,10 +254,9 @@ class OurBidirectional(OurLayer):
     def compute_output_shape(self, input_shape):
         return input_shape[0][:-1] + (self.forward_layer.units * 2,)
 
-for i in test['content']:
-    s = i
-for i in test[:20]['content']:
-    s1 = i 
+import tensorflow as tf
+
+tf.reverse_sequence
 
 def seq_avgpool(x):
     """seq是[None, seq_len, s_size]的格式，
@@ -436,7 +422,7 @@ model.add_loss(cross_entropy)
 model.compile(optimizer=Adam(1e-3))
 
 
-def gen_sent(s,topk=3 , maxlen=64 ):
+def gen_sent(s, topk=3, maxlen=64):
     """beam search解码
     每次只保留topk个最优候选结果；如果topk=1，那么就是贪心搜索
     """
@@ -472,10 +458,11 @@ def gen_sent(s,topk=3 , maxlen=64 ):
 
 #s1 = u'夏天来临，皮肤在强烈紫外线的照射下，晒伤不可避免，因此，晒后及时修复显得尤为重要，否则可能会造成长期伤害。专家表示，选择晒后护肤品要慎重，芦荟凝胶是最安全，有效的一种选择，晒伤严重者，还请及时就医 。'
 #s2 = u'8月28日，网络爆料称，华住集团旗下连锁酒店用户数据疑似发生泄露。从卖家发布的内容看，数据包含华住旗下汉庭、禧玥、桔子、宜必思等10余个品牌酒店的住客信息。泄露的信息包括华住官网注册资料、酒店入住登记的身份信息及酒店开房记录，住客姓名、手机号、邮箱、身份证号、登录账号密码等。卖家对这个约5亿条数据打包出售。第三方安全平台威胁猎人对信息出售者提供的三万条数据进行验证，认为数据真实性非常高。当天下午，华住集 团发声明称，已在内部迅速开展核查，并第一时间报警。当晚，上海警方消息称，接到华住集团报案，警方已经介入调查。'
+#sp = u'针对现有的软件众包工人选择机制对工人间协同开发考虑不足的问题,在竞标模式的基础上提出一种基于活跃时间分组的软件众包工人选择机制。首先,基于活跃时间将众包工人划分为多个协同开发组;然后,根据组内工人开发能力和协同因子计算协同工作组权重;最后,选定权重最大的协同工作组为最优工作组,并根据模块复杂度为每个任务模块从该组内选择最适合的工人。实验结果表明,该机制相比能力优先选择方法在工人平均能力上仅有0. 57%的差距,同时因为保证了工人间的协同而使项目风险平均降低了32%,能有效指导需多人协同进行的众包软件任务的工人选择。'
 
 class Evaluate(Callback):
     def __init__(self):
-        self.data=pd.read_csv(val_data_path,sep = '\t')
+        self.data=pd.read_csv(TEST_PATH,sep = '\t',header=None,)
         self.lowest = 1e10
         self.lowest1 = 1e10
     def on_epoch_end(self, epoch, logs=None):
