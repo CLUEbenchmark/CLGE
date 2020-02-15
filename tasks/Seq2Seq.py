@@ -74,6 +74,7 @@ else:
         for w in a[1:2] :
              for q in w:
                 chars[q] = chars.get(q,0) + 1
+                print(chars[q])
     for b in db['content'].items():
         for w in b[1:2] :
              for q in w:
@@ -91,16 +92,8 @@ else:
     id2char = {i+4:j for i,j in enumerate(chars)}
     char2id = {j:i for i,j in id2char.items()}
     json.dump([chars,id2char,char2id], open('seq2seq_config.json', 'w'))
-chars
-        
-chars = {i:j for i,j in chars.items() if j >= min_count}
-    # 0: mask
-    # 1: unk
-    # 2: start
-    # 3: end
-id2char = {i+4:j for i,j in enumerate(chars)}
-char2id = {j:i for i,j in id2char.items()}
-#json.dump([chars,id2char,char2id], open('seq2seq_config.json', 'w'))
+
+    
 
 
 def str2id(s, start_end=False):
