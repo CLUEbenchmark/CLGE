@@ -1,7 +1,7 @@
 # CLGE
 Chinese Language Generation Evaluation 中文生成任务基准测评
 
-为中文生成任务提数据集、基准(预训练)模型和排行榜。
+为中文生成任务提供数据集、基准(预训练)模型和排行榜。
 
 ## 一键运行
 
