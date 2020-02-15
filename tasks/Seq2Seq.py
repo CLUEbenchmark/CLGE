@@ -69,6 +69,7 @@ chars = {}
 for a in db['title'].items():
     for w in a :
         chars[w] = chars.get(w,0) + 1
+        print(chars[w])
 for b in db['content'].items():
     for w in b :
         chars[w] = chars.get(w,0) + 1
@@ -82,10 +83,7 @@ id2char = {i+4:j for i,j in enumerate(chars)}
 char2id = {j:i for i,j in id2char.items()}
 #json.dump([chars,id2char,char2id], open('seq2seq_config.json', 'w'))
 
-   
-for i in chars:        
-    print(i)
-    
+
 def str2id(s, start_end=False):
     # 文字转整数id
     if start_end: # 补上<start>和<end>标记
@@ -121,8 +119,8 @@ def data_generator():
                 yield [X,Y], None
                 X,Y = [],[]
  
-for a,b in zip(db['content'].items(),db['title'].items()):
-    print(str2id(a[1]))
+#for a,b in zip(db['content'].items(),db['title'].items()):
+#    print(str2id(a[1]))
 
 def to_one_hot(x):
     """输出一个词表大小的向量，来标记该词是否在文章出现过
