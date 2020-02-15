@@ -92,6 +92,8 @@ else:
     char2id = {j:i for i,j in id2char.items()}
     json.dump([chars,id2char,char2id], open('seq2seq_config.json', 'w'))
 
+print(chars[:30])
+    
 def str2id(s, start_end=False):
     # 文字转整数id
     if start_end: # 补上<start>和<end>标记
@@ -126,9 +128,7 @@ def data_generator():
                 Y = np.array(padding(Y))
                 yield [X,Y], None
                 X,Y = [],[]
-for a,b in zip(db['content'].items(),db['title'].items()):
-    print(str2id(b[1],start_end=True))
-
+                
 def to_one_hot(x):
     """输出一个词表大小的向量，来标记该词是否在文章出现过
     """
