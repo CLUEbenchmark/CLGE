@@ -46,11 +46,12 @@ epochs = args.epochs
 db = pd.read_csv(
     TRAIN_PATH,sep="\t",names=['title','content']
 )
-print(db[:5])
+#print(db[:5])
 #print('实验中')
 test = pd.read_csv(
     TEST_PATH , sep = "\t" , names = ['title','content']
 )
+print(test[:5])
 #print('实验中1')
 sample1 = pd.read_csv(
     Sample_PATH , sep = "\t" , names = ['title','content']
