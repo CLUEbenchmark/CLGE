@@ -1,7 +1,7 @@
 # CLGE
 Chinese Language Generation Evaluation 中文生成任务基准测评
 
-为中文生成任务提供预训练模型和任务的排行榜。
+为中文生成任务提数据集、基准(预训练)模型和排行榜。
 
 ## 一键运行
 
@@ -16,19 +16,19 @@ Chinese Language Generation Evaluation 中文生成任务基准测评
    如运行 sh run_bert_base.sh 会开始 csl 任务在 BERT_base 上的训练
 ```
 
-## 评价指标
+## 测评指标
 
 **1. Rouge-L**
 
-Rouge-L 根据生成文本和参考文本的最长公共子序列（LCS）得出测评分数。
-python rouge 只适用于英文，使用 BERT Tokenizer 将中文转换为数字 id 再计算得分。
+Rouge-L 根据生成文本和参考文本的最长公共子序列（LCS）得出分数。
+python rouge 只适用于英文，这里将中文映射到数字 id 再计算得分。
 
 
 ## 数据集介绍
 
 ### **1. CSL 中长文本摘要生成**
 
-取自[中文科学文献数据(CSL)](https://github.com/P01son6415/chinese-scientific-literature-dataset)，选取 10k 条计算机相关领域论文及其标题作为训练集。
+[中文科学文献数据(CSL)](https://github.com/P01son6415/chinese-scientific-literature-dataset)，选取 10k 条计算机相关领域论文及其标题作为训练集。
 
 ```
 数据量：训练集(10,000)，验证集(1,000)，测试集(1,000)
@@ -41,17 +41,19 @@ python rouge 只适用于英文，使用 BERT Tokenizer 将中文转换为数字
 
 [运行结果](docs/csl.md)
 
-|         模型          | 验证集（val) |               训练参数              |
-| :-------------------: | :----------: |  :--------------------------------: |
-|      ALBERT-tiny      |    54.45     |  batch_size=8, length=256, epoch=5, lr=1e-5  |
-|       BERT-base       |    66.69     | batch_size=8, length=256, epoch=5, lr=1e-5  |
-|     BERT-wwm-ext      |    66.78     |  batch_size=8, length=256, epoch=10, lr=1e-5 |
-|    RoBERTa-wwm-ext    |    66.91     |  batch_size=8, length=256, epoch=10, lr=1e-5 |
-|   RoBERTa-wwm-large   |    68.10     |  batch_size=4, length=256, epoch=10, lr=1e-5 |
-|     LSTM-Seq2Seq      |    43.77     |  batch_size=64, length=256, epoch=10, lr=1e-3 |
+|         模型          | 验证集（val) | 测试集（test) |               训练参数              |
+| :-------------------: | :----------: |:----------: |  :--------------------------------: |
+|      ALBERT-tiny      |    54.45     | - |  batch_size=8, length=256, epoch=5, lr=1e-5  |
+|       BERT-base       |    66.69     | - |  batch_size=8, length=256, epoch=5, lr=1e-5  |
+|     BERT-wwm-ext      |    66.78     | - |  batch_size=8, length=256, epoch=10, lr=1e-5 |
+|    RoBERTa-wwm-ext    |    66.91     | - |  batch_size=8, length=256, epoch=10, lr=1e-5 |
+|   RoBERTa-wwm-large   |    68.10     | - |  batch_size=4, length=256, epoch=10, lr=1e-5 |
+|     LSTM-Seq2Seq      |    43.77     | - |  batch_size=64, length=256, epoch=10, lr=1e-3 |
 
 
 ### **2. LCSTS 短文本摘要生成**
+
+https://arxiv.org/abs/1506.05865
 
 微博短文本及其作者给出的摘要，选取了数据集中 PART_II 部分作为训练集。
 
@@ -66,14 +68,14 @@ python rouge 只适用于英文，使用 BERT Tokenizer 将中文转换为数字
 
 [运行结果](docs/lcsts.md)
 
-|         模型          | 验证集（val) |               训练参数              |
-| :-------------------: | :----------: |  :--------------------------------: |
-|      ALBERT-tiny      |    31.49     |  batch_size=16, length=128, epoch=10, lr=1e-5  |
-|       BERT-base       |    35.59     |  batch_size=16, length=128, epoch=5, lr=1e-5  |
-|     BERT-wwm-ext      |    35.33     |  batch_size=16, length=128, epoch=5, lr=1e-5 |
-|    RoBERTa-wwm-ext    |    36.11     |  batch_size=16, length=128, epoch=5, lr=1e-5 |
-|   RoBERTa-wwm-large   |    35.05     |  batch_size=8, length=128, epoch=8, lr=1e-5  |
-|     LSTM-Seq2Seq      |    12.66     |  batch_size=64, length=128, epoch=5, lr=1e-3 |
+|         模型          | 验证集（val) | 测试集（test) |               训练参数              |
+| :-------------------: | :----------: |:----------: |  :--------------------------------: |
+|      ALBERT-tiny      |    31.49     | - |  batch_size=16, length=128, epoch=10, lr=1e-5  |
+|       BERT-base       |    35.59     | - |  batch_size=16, length=128, epoch=5, lr=1e-5  |
+|     BERT-wwm-ext      |    35.33     | - |  batch_size=16, length=128, epoch=5, lr=1e-5 |
+|    RoBERTa-wwm-ext    |    36.11     | - |  batch_size=16, length=128, epoch=5, lr=1e-5 |
+|   RoBERTa-wwm-large   |    35.05     | - |  batch_size=8, length=128, epoch=8, lr=1e-5  |
+|     LSTM-Seq2Seq      |    12.66     | - |  batch_size=64, length=128, epoch=5, lr=1e-3 |
 
 
 
@@ -97,41 +99,28 @@ python rouge 只适用于英文，使用 BERT Tokenizer 将中文转换为数字
 }
 ```
 
-|         模型          | 验证集（val) |               训练参数              |
-| :-------------------: | :----------: |  :--------------------------------: |
-|      ALBERT-tiny      |    70.08     |  batch_size=8, epoch=5, lr=1e-5  |
-|       BERT-base       |    80.85     |  batch_size=4, epoch=5, lr=1e-5  |
-|     BERT-wwm-ext      |    83.36     |  batch_size=4, epoch=5, lr=1e-5 |
-|    RoBERTa-wwm-ext    |    85.85     |  batch_size=4, epoch=5, lr=1e-5 |
-|   RoBERTa-wwm-large   |    -     |  - |
+|         模型          | 验证集（val) | 测试集（test) |               训练参数              |
+| :-------------------: | :----------: |:----------: |  :--------------------------------: |
+|      ALBERT-tiny      |    70.08     | - |  batch_size=8, epoch=5, lr=1e-5  |
+|       BERT-base       |    80.85     | - |  batch_size=4, epoch=5, lr=1e-5  |
+|     BERT-wwm-ext      |    83.36     | - |  batch_size=4, epoch=5, lr=1e-5 |
+|    RoBERTa-wwm-ext    |    85.85     | - |  batch_size=4, epoch=5, lr=1e-5 |
+|   RoBERTa-wwm-large   |    -     |  - | - |
 
-### 4.THUCNEWS 中长文本标题生成
+### 4. CSL 关键词生成
+Coming soom...
 
-清华NLP组提供的THUCNews新闻文本数据集，根据新闻内容生成标题。训练采用了自回归模型**seq2seq**，其中encoder部分采用了BiLSTM，decoder采用LSTM。后续会尝试不同的编码、解码组件，并提供测试结果和得分。
+### 5. AFQMC 同义句生成
+Coming soom...
 
-为了加速收敛，解码时采取了Attention和先验知识2种策略，具体可以参考[2]。
+## Contribution
+Share your data set with community or make a contribution today! Just send email to chineseGLUE#163.com,
 
-```
-数据量：64k 篇文章（标题 + 正文）
-惨烈3加时背后还有欣喜 6分钟完美防守如何延续？
-新浪体育讯北京时间1月14日消息，火箭在主场击败森林狼，实在不是什么让人意外的结果。而如果你看了今天火箭和森林狼比赛的过程，那么，对于这场三个加时的比赛的惊心动魄紧张之余，恐怕也会感叹火箭队的实力不济。在阿隆-布鲁克斯，特雷沃-阿里扎和肖恩-巴蒂尔都发挥算是正常的情况下，火箭今天打的如此尴尬，主要原因就是内线的羸弱。看看今天火箭的内线球员，除了查克-海耶斯之外，其他人的发挥都有着或多或少的问题。路易斯-斯科拉的篮板球糟糕，卡尔-兰德里依然没有走出低迷，而大卫-安德森则成为了对手主要攻击的防守漏洞。好吧，火箭好歹也赢了比赛，这些总结缺点的任务还是交给火箭的教练班子来完成，还是让我们来看看比赛中一些让人欣喜的镜头吧。先来看看火箭第一节的防守盛宴。从第一节比赛还剩下8分39秒的时候，一直到第一节比赛还剩下2分30秒的时候，在长达6分钟的时间里，火箭依靠自己的防守，让森林狼没有得分。当然，我们不否认，这种防守盛宴需要对手的配合，如果森林狼的状态能够稍微好点，也不至于在这么长的时间内一分不得。但是火箭在第一节比赛中，不管是激情，积极程度还是手感，确实都远远的超越了对手森林狼。让对手在6分钟的时间内不得分，也算得上是火箭在本赛季的一项壮举。可惜，6分钟的防守并没有能够延续，否则，这比赛恐怕早就已经尘埃落定了。然后就是大卫-安德森出人意料的表演。在第三节比赛还剩下几秒钟的时候，火箭队发动最后一次进攻。安德森在罚球线稍微远点的地方拿球之后，在正面防守他的是森林狼的头号球星艾尔-杰弗森。安德森身体虽然不如对手强壮，但是脚步和灵活性方面还是相当不错。安德森直接一个假动作之后，就直接冲着内线突破。杰弗森被假动作骗的缓了一下，想要转身跟上安德森防守的时候，脚下已经转不过来，直接一屁股坐在了地上。要知道，杰弗森也是联盟中一流的内线球员，他在今天和安德森的对位中也算是占尽优势。但是，安德森能够晃倒杰弗森，好歹也算是在场上好好的出了一口气。当然，我们更希望看到的是，安德森在场上的表现能够压制杰弗森。
-```
-
-部分测试结果：
-
-```
-迭代约100个epoch，训练时长约2.5小时
-s1：近日，网上流出夏雨和袁泉吃饭视频，两人都穿着低调白衣。在聚餐时夏雨站起来表演魔术，袁泉则是一脸开心大笑，非常捧丈夫的场。整个画面十分温馨有爱。
-predict：袁泉夏雨演绎魔术 画面十分温馨有爱
-s2：王先生在海底捞就餐过程中，在锅底吃出烟头，与商家沟通过程中，店员觉得顾客音量大，对店面影响不好，报警让警方过来处理。目前双方仍在协商中。
-predict：王先生在海底捞就餐过程中出烟头
-s3：1月5日，作为全球新年后的第一场国际田联金标赛事，2020年厦门马拉松鸣枪开跑，在3万跑者前进的步伐中迎来18岁“成人礼”。
-predict：2020年厦门马拉松鸣枪开跑 18岁成人礼
-```
+or join QQ group: 836811304
 
 ## Reference
 
 [1] bert4keras：https://github.com/bojone/bert4keras
 
-[2]玩转Keras之seq2seq自动生成标题：[https://kexue.fm/archives/5861#seq2seq%E6%8F%90%E5%8D%87](https://kexue.fm/archives/5861#seq2seq提升)
+[2] 玩转Keras之seq2seq自动生成标题：[https://kexue.fm/archives/5861#seq2seq%E6%8F%90%E5%8D%87](https://kexue.fm/archives/5861#seq2seq提升)
 
