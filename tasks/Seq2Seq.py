@@ -475,7 +475,7 @@ def gen_sent(s):
 
 class Evaluate(Callback):
     def __init__(self):
-        self.data=pd.read_csv(TEST_PATH,sep = '\t',header=None,)
+        self.data=pd.read_csv(val_data_path,sep = '\t',header=None,)
         self.lowest = 1e10
         self.lowest1 = 1e10
     def on_epoch_end(self, epoch, logs=None):
