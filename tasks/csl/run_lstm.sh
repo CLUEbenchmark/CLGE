@@ -10,15 +10,6 @@ export GLUE_DATA_DIR=$CURRENT_DIR/../../CLGEdataset
 
 # check python package 
 
-check_keras=`pip show keras | grep "Version"`
-
-if [ ! -n "$check_keras" ]; then
-  pip install keras==2.2.4
-else
-  pip install keras==2.2.4
-fi
-
-
 check_keras_layer_normalization=`pip show keras_layer_normalization | grep "Version"`
 
 if [ ! -n "$check_keras_layer_normalization" ]; then
