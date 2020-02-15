@@ -43,6 +43,18 @@ maxlen = args.max_input_len
 batch_size = args.batch_size
 epochs = args.epochs
 
+db = pd.read_csv(
+    TRAIN_PATH,sep="\t",names=['title','content']
+)
+
+test = pd.read_csv(
+    TEST_PATH , sep = "\t" , names = ['title','content']
+)
+
+sample1 = pd.read_csv(
+    Sample_PATH , sep = "\t" , names = ['title','content']
+)
+
 
 min_count = 32
 char_size = 128
