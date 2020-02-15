@@ -55,9 +55,9 @@ sample1 = pd.read_csv(
 )
 
 min_count = 32
-#maxlen = 400
-#batch_size = 64
-#epochs = 100
+maxlen = 400
+batch_size = 64
+epochs = 100
 char_size = 128
 z_dim = 128
 
@@ -94,10 +94,10 @@ else:
 def str2id(s, start_end=False):
     # 文字转整数id
     if start_end: # 补上<start>和<end>标记
-        ids = [char2id.get(c, 1) for c in s[:max_input_len-2]]
+        ids = [char2id.get(c, 1) for c in s[:maxlen-2]]
         ids = [2] + ids + [3]
     else: # 普通转化
-        ids = [char2id.get(c, 1) for c in s[:max_input_len]]
+        ids = [char2id.get(c, 1) for c in s[:maxlen]]
     return ids
 
 
@@ -155,10 +155,10 @@ char2id1 = {j:i for i,j in id2char1.items()}
 def str2id1(s, start_end=False):
     # 文字转整数id
     if start_end: # 补上<start>和<end>标记
-        ids = [char2id1.get(c, 1) for c in s[:max_input_len-2]]
+        ids = [char2id1.get(c, 1) for c in s[:maxlen-2]]
         ids = [2] + ids + [3] 
     else: # 普通转化
-        ids = [char2id1.get(c, 1) for c in s[:max_input_len]]
+        ids = [char2id1.get(c, 1) for c in s[:maxlen]]
     return ids
 
 
@@ -436,14 +436,14 @@ model.add_loss(cross_entropy)
 model.compile(optimizer=Adam(1e-3))
 
 
-def gen_sent(s,topk=3 , max_output_len=64 ):
+def gen_sent(s,topk=3 , maxlen=64 ):
     """beam search解码
     每次只保留topk个最优候选结果；如果topk=1，那么就是贪心搜索
     """
     xid = np.array([str2id(s)] * topk) # 输入转id
     yid = np.array([[2]] * topk) # 解码均以<start>开头，这里<start>的id为2
     scores = [0] * topk # 候选答案分数
-    for i in range(max_output_len): # 强制要求输出不超过maxlen字
+    for i in range(maxlen): # 强制要求输出不超过maxlen字
         proba = model.predict([xid, yid])[:, i, 3:] # 直接忽略<padding>、<unk>、<start>
         log_proba = np.log(proba + 1e-6) # 取对数，方便计算
         arg_topk = log_proba.argsort(axis=1)[:,-topk:] # 每一项选出topk
@@ -492,8 +492,8 @@ class Evaluate(Callback):
         for a,b in self.data.iterrows():
             generated_title = str2id1(gen_sent(b[1], 3))
             real_title = str2id1(b[0])
-            token_title = " ".join( str(c) for c in real_title[:max_input_len])
-            token_gen_title = " ".join( str(c) for c in generated_title[:max_input_len])
+            token_title = " ".join( str(c) for c in real_title[:maxlen])
+            token_gen_title = " ".join( str(c) for c in generated_title[:maxlen])
             rouge_score = rouge.get_scores(token_gen_title,token_title)
             rouge_scores.append(rouge_score[0]['rouge-l']['f'])
         print("rouge-l scores: ",np.mean(rouge_scores))
