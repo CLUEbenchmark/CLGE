@@ -50,6 +50,7 @@ python rouge 只适用于英文，使用 BERT Tokenizer 将中文转换为数字
 |   RoBERTa-wwm-large   |    68.10     |  batch_size=4, length=256, epoch=10, lr=1e-5 |
 |     LSTM-Seq2Seq      |    43.77     |  batch_size=64, length=256, epoch=10, lr=1e-3 |
 
+
 ### **2. LCSTS 短文本摘要生成**
 
 微博短文本及其作者给出的摘要，选取了数据集中 PART_II 部分作为训练集。
@@ -73,6 +74,7 @@ python rouge 只适用于英文，使用 BERT Tokenizer 将中文转换为数字
 |    RoBERTa-wwm-ext    |    36.11     |  batch_size=16, length=128, epoch=5, lr=1e-5 |
 |   RoBERTa-wwm-large   |    35.05     |  batch_size=8, length=128, epoch=8, lr=1e-5  |
 |     LSTM-Seq2Seq      |    12.66     |  batch_size=64, length=128, epoch=5, lr=1e-3 |
+
 
 
 ### **3. WebQA 阅读理解问答**
