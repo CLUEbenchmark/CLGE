@@ -91,7 +91,7 @@ else:
     id2char = {i+4:j for i,j in enumerate(chars)}
     char2id = {j:i for i,j in id2char.items()}
     json.dump([chars,id2char,char2id], open('seq2seq_config.json', 'w'))
-
+chars
         
 chars = {i:j for i,j in chars.items() if j >= min_count}
     # 0: mask
