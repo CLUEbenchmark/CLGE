@@ -39,7 +39,7 @@ fi
 # run task
 cd $CURRENT_DIR
 echo "Start running..."
-python ../CSLbySeq2Seq.py \
+python ../Seq2Seq.py \
     --train_data_path=$GLUE_DATA_DIR/$TASK_NAME/train.tsv \
     --val_data_path=$GLUE_DATA_DIR/$TASK_NAME/val.tsv \
     --sample_path=$GLUE_DATA_DIR/$TASK_NAME/sample.tsv \
