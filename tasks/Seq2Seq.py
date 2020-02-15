@@ -69,7 +69,7 @@ chars = {}
 for a in db['title'].items():
     for w in a :
         chars[w] = chars.get(w,0) + 1
-        print(chars[w])
+        print(w)
 for b in db['content'].items():
     for w in b :
         chars[w] = chars.get(w,0) + 1
