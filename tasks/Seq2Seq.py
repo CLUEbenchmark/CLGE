@@ -41,7 +41,7 @@ max_output_len = args.max_output_len
 db = pd.read_csv(
     train_data_path,sep="\t",names=['title','content']
 )
-#db.head(20)
+db.head(20)
 
 #TEST_PATH = '/openbayes/home/CLGE/CLGEdataset/csl/val.tsv'
 test = pd.read_csv(
