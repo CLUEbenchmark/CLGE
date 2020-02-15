@@ -51,7 +51,7 @@ db = pd.read_csv(
 test = pd.read_csv(
     TEST_PATH , sep = "\t" , names = ['title','content']
 )
-print(test[:5])
+#print(test[:5])
 #print('实验中1')
 sample1 = pd.read_csv(
     Sample_PATH , sep = "\t" , names = ['title','content']
@@ -126,7 +126,8 @@ def data_generator():
                 Y = np.array(padding(Y))
                 yield [X,Y], None
                 X,Y = [],[]
-
+for a,b in zip(db['content'].items(),db['title'].items()):
+    print(str2id(b[1],start_end=True))
 
 def to_one_hot(x):
     """输出一个词表大小的向量，来标记该词是否在文章出现过
