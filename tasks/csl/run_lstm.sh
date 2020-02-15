@@ -3,6 +3,7 @@
 # @Date:   2019-2-15
 
 TASK_NAME="csl" 
+CURRENT_DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 export CUDA_VISIBLE_DEVICES="0"
 export GLUE_DATA_DIR=$CURRENT_DIR/../../CLGEdataset
 
