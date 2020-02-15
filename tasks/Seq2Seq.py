@@ -25,8 +25,18 @@ parser.add_argument('--lr', default=1e-3, type=float, required=False, help='学�
 parser.add_argument('--topk', default=3, type=int, required=False, help='解码TopK')
 parser.add_argument('--max_input_len', default=128, type=int, required=False, help='最大输入长度')
 parser.add_argument('--max_output_len', default=64, type=int, required=False, help='最大输出长度')
-
 args = parser.parse_args()
+
+train_data_path = args.train_data_path
+val_data_path = args.val_data_path
+sample_path = args.sample_path
+epochs = args.epochs
+batch_size = args.batch_size
+lr = args.lr
+topk = args.topk
+max_input_len = args.max_input_len
+max_output_len = args.max_output_len
+
 #TRAIN_PATH = '/openbayes/home/CLGE/CLGEdataset/csl/train.tsv'
 db = pd.read_csv(
     train_data_path,sep="\t",names=['title','content']
