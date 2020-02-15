@@ -1,6 +1,5 @@
 import numpy as np
 from tqdm import tqdm
-#import pymongo
 import pandas as pd
 import os,json
 import tensorflow as tf
@@ -13,7 +12,7 @@ from rouge import Rouge
 from keras import backend as K
 from keras.callbacks import Callback
 from keras.optimizers import Adam
-
+import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('--train_data_path',type=str, required=True, help='训练集路径')
 parser.add_argument('--val_data_path',type=str, required=True, help='验证集路径')
@@ -25,69 +24,68 @@ parser.add_argument('--lr', default=1e-3, type=float, required=False, help='学�
 parser.add_argument('--topk', default=3, type=int, required=False, help='解码TopK')
 parser.add_argument('--max_input_len', default=128, type=int, required=False, help='最大输入长度')
 parser.add_argument('--max_output_len', default=64, type=int, required=False, help='最大输出长度')
-
 args = parser.parse_args()
-#TRAIN_PATH = '/openbayes/home/CLGE/CLGEdataset/csl/train.tsv'
+
+lr = args.lr
+topk = args.topk
+
+TRAIN_PATH = args.train_data_path
+TEST_PATH = args.val_data_path
+Sample_PATH = args.sample_path
+
+maxlen = args.max_input_len
+batch_size = args.batch_size
+epochs = args.epochs
+
 db = pd.read_csv(
-    train_data_path,sep="\t",names=['title','content']
+    TRAIN_PATH,sep="\t",names=['title','content']
 )
-#db.head(20)
 
-#TEST_PATH = '/openbayes/home/CLGE/CLGEdataset/csl/val.tsv'
 test = pd.read_csv(
-    val_data_path , sep = "\t" , names = ['title','content']
+    TEST_PATH , sep = "\t" , names = ['title','content']
 )
-#test.head(5)
 
-#Sample_PATH = '/openbayes/home/CLGE/CLGEdataset/csl/sample.tsv'
 sample1 = pd.read_csv(
-    sample_path , sep = "\t" , names = ['title','content']
+    Sample_PATH , sep = "\t" , names = ['title','content']
 )
+
 
 min_count = 32
-#maxlen = 400
-#batch_size = 64
-#epochs = 100
 char_size = 128
 z_dim = 128
 
 def add_one(x):
      return x + 1
 
+chars = {}
+for a in db['title'].items():
+    for w in a[1:2] :
+        for q in w :
+            chars[q] = chars.get(q,0) + 1
+            #print(chars[q])
+for b in db['content'].items():
+    for w in b[1:2] :
+         for q in w :
+            chars[q] = chars.get(q,0) + 1
+   
+chars = {i:j for i,j in chars.items() if j >= min_count}
+# 0: mask
+# 1: unk
+# 2: start
+# 3: end
+id2char = {i+4:j for i,j in enumerate(chars)}
+char2id = {j:i for i,j in id2char.items()}
+json.dump([chars,id2char,char2id], open('seq2seq_config.json', 'w'))
 
-if os.path.exists('seq2seq_config.json'):
-    chars,id2char,char2id = json.load(open('seq2seq_config.json'))
-    id2char = {int(i):j for i,j in id2char.items()}
-else:
-    chars = {}
-    for a in db['title'].items():
-        for w in a :
-            chars[w] = chars.get(w,0) + 1
 
-    for b in db['content'].items():
-        for w in b :
-            chars[w] = chars.get(w,0) + 1
-    #for i,a in db.items():
-     #   for w in a['content']: # 纯文本，不用分词
-      #      chars[w] = chars.get(w,0) + 1
-       # for w in a['title']: # 纯文本，不用分词
-        #    chars[w] = chars.get(w,0) + 1
-    chars = {i:j for i,j in chars.items() if j >= min_count}
-    # 0: mask
-    # 1: unk
-    # 2: start
-    # 3: end
-    id2char = {i+4:j for i,j in enumerate(chars)}
-    char2id = {j:i for i,j in id2char.items()}
-    json.dump([chars,id2char,char2id], open('seq2seq_config.json', 'w'))
 
 def str2id(s, start_end=False):
     # 文字转整数id
     if start_end: # 补上<start>和<end>标记
-        ids = [char2id.get(c, 1) for c in s[:max_input_len-2]]
+        ids = [char2id.get(c, 1) for c in s[:maxlen-2]]
         ids = [2] + ids + [3]
     else: # 普通转化
-        ids = [char2id.get(c, 1) for c in s[:max_input_len]]
+        ids = [char2id.get(c, 1) for c in s[:maxlen]]
     return ids
 
 
@@ -115,8 +113,7 @@ def data_generator():
                 Y = np.array(padding(Y))
                 yield [X,Y], None
                 X,Y = [],[]
-
-
+ 
 def to_one_hot(x):
     """输出一个词表大小的向量，来标记该词是否在文章出现过
     """
@@ -145,10 +142,10 @@ char2id1 = {j:i for i,j in id2char1.items()}
 def str2id1(s, start_end=False):
     # 文字转整数id
     if start_end: # 补上<start>和<end>标记
-        ids = [char2id1.get(c, 1) for c in s[:max_input_len-2]]
+        ids = [char2id1.get(c, 1) for c in s[:maxlen-2]]
         ids = [2] + ids + [3] 
     else: # 普通转化
-        ids = [char2id1.get(c, 1) for c in s[:max_input_len]]
+        ids = [char2id1.get(c, 1) for c in s[:maxlen]]
     return ids
 
 
@@ -163,10 +160,6 @@ def seq_padding(X, padding=0):
         np.concatenate([x, [padding] * (ML - len(x))]) if len(x) < ML else x for x in X
     ])
 
-#for i,a in db['title'].items() if i<=10:
-#    print(a)
-
-
 
 def fk():
     testX,testY = [],[]
@@ -179,7 +172,7 @@ def fk():
                 testY = np.array(padding(testY))
                 yield [testX,testY], None
                 testX,testY= [],[]
-    
+   
 class ScaleShift(Layer):
     """缩放平移变换层（Scale and shift）
     """
@@ -257,10 +250,9 @@ class OurBidirectional(OurLayer):
     def compute_output_shape(self, input_shape):
         return input_shape[0][:-1] + (self.forward_layer.units * 2,)
 
-for i in test['content']:
-    s = i
-for i in test[:20]['content']:
-    s1 = i 
+import tensorflow as tf
+
+tf.reverse_sequence
 
 def seq_avgpool(x):
     """seq是[None, seq_len, s_size]的格式，
@@ -426,14 +418,14 @@ model.add_loss(cross_entropy)
 model.compile(optimizer=Adam(1e-3))
 
 
-def gen_sent(s):
+def gen_sent(s, topk=3, maxlen=64):
     """beam search解码
     每次只保留topk个最优候选结果；如果topk=1，那么就是贪心搜索
     """
     xid = np.array([str2id(s)] * topk) # 输入转id
     yid = np.array([[2]] * topk) # 解码均以<start>开头，这里<start>的id为2
     scores = [0] * topk # 候选答案分数
-    for i in range(max_output_len): # 强制要求输出不超过maxlen字
+    for i in range(maxlen): # 强制要求输出不超过maxlen字
         proba = model.predict([xid, yid])[:, i, 3:] # 直接忽略<padding>、<unk>、<start>
         log_proba = np.log(proba + 1e-6) # 取对数，方便计算
         arg_topk = log_proba.argsort(axis=1)[:,-topk:] # 每一项选出topk
@@ -462,6 +454,7 @@ def gen_sent(s):
 
 #s1 = u'夏天来临，皮肤在强烈紫外线的照射下，晒伤不可避免，因此，晒后及时修复显得尤为重要，否则可能会造成长期伤害。专家表示，选择晒后护肤品要慎重，芦荟凝胶是最安全，有效的一种选择，晒伤严重者，还请及时就医 。'
 #s2 = u'8月28日，网络爆料称，华住集团旗下连锁酒店用户数据疑似发生泄露。从卖家发布的内容看，数据包含华住旗下汉庭、禧玥、桔子、宜必思等10余个品牌酒店的住客信息。泄露的信息包括华住官网注册资料、酒店入住登记的身份信息及酒店开房记录，住客姓名、手机号、邮箱、身份证号、登录账号密码等。卖家对这个约5亿条数据打包出售。第三方安全平台威胁猎人对信息出售者提供的三万条数据进行验证，认为数据真实性非常高。当天下午，华住集 团发声明称，已在内部迅速开展核查，并第一时间报警。当晚，上海警方消息称，接到华住集团报案，警方已经介入调查。'
+#sp = u'针对现有的软件众包工人选择机制对工人间协同开发考虑不足的问题,在竞标模式的基础上提出一种基于活跃时间分组的软件众包工人选择机制。首先,基于活跃时间将众包工人划分为多个协同开发组;然后,根据组内工人开发能力和协同因子计算协同工作组权重;最后,选定权重最大的协同工作组为最优工作组,并根据模块复杂度为每个任务模块从该组内选择最适合的工人。实验结果表明,该机制相比能力优先选择方法在工人平均能力上仅有0. 57%的差距,同时因为保证了工人间的协同而使项目风险平均降低了32%,能有效指导需多人协同进行的众包软件任务的工人选择。'
 
 class Evaluate(Callback):
     def __init__(self):
@@ -482,8 +475,8 @@ class Evaluate(Callback):
         for a,b in self.data.iterrows():
             generated_title = str2id1(gen_sent(b[1], 3))
             real_title = str2id1(b[0])
-            token_title = " ".join( str(c) for c in real_title[:max_input_len])
-            token_gen_title = " ".join( str(c) for c in generated_title[:max_input_len])
+            token_title = " ".join( str(c) for c in real_title[:maxlen])
+            token_gen_title = " ".join( str(c) for c in generated_title[:maxlen])
             rouge_score = rouge.get_scores(token_gen_title,token_title)
             rouge_scores.append(rouge_score[0]['rouge-l']['f'])
         print("rouge-l scores: ",np.mean(rouge_scores))
@@ -493,7 +486,7 @@ evaluator = Evaluate()
 rouge = Rouge()
 history=model.fit_generator(data_generator(),
                     steps_per_epoch=1000,
-                    epochs=20,
+                    epochs=epochs,
                     validation_data=fk(),
                     validation_steps=20,
                     callbacks=[evaluator]
