@@ -69,7 +69,7 @@ fi
 # run task
 cd $CURRENT_DIR
 echo "Start running..."
-python ../summary_baseline_full_token.py \
+python ../summary_baseline.py \
     --dict_path=$BERT_BASE_DIR/vocab.txt \
     --config_path=$BERT_BASE_DIR/bert_config.json \
     --checkpoint_path=$BERT_BASE_DIR/bert_model.ckpt \
