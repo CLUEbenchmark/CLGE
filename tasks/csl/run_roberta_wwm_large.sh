@@ -31,6 +31,14 @@ else
   echo "rouge installed."
 fi
 
+check_nltk=`pip show nltk | grep "Version"`
+
+if [ ! -n "$check_nltk" ]; then
+  pip install nltk
+else
+  echo "nltk installed."
+fi
+
 # check dataset
 
 cd $GLUE_DATA_DIR/$TASK_NAME
@@ -71,7 +79,7 @@ python ../summary_baseline.py \
     --sample_path=$GLUE_DATA_DIR/$TASK_NAME/sample.tsv \
     --albert=False \
     --epochs=10 \
-    --batch_size=8 \
+    --batch_size=4 \
     --lr=1e-5 \
     --topk=1 \
     --max_input_len=256 \

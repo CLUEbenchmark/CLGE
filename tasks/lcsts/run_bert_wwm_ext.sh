@@ -31,6 +31,14 @@ else
   echo "rouge installed."
 fi
 
+check_nltk=`pip show nltk | grep "Version"`
+
+if [ ! -n "$check_nltk" ]; then
+  pip install nltk
+else
+  echo "nltk installed."
+fi
+
 # check dataset
 
 cd $GLUE_DATA_DIR/$TASK_NAME

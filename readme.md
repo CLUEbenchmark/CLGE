@@ -3,6 +3,7 @@ Chinese Language Generation Evaluation 中文生成任务基准测评
 
 为中文生成任务提供数据集、基准(预训练)模型和排行榜。
 
+
 ## 一键运行
 
 ```
@@ -18,11 +19,15 @@ Chinese Language Generation Evaluation 中文生成任务基准测评
 
 ## 测评指标
 
-**1. Rouge-L**
+**1. Rouge-1**
 
 Rouge-L 根据生成文本和参考文本的最长公共子序列（LCS）得出分数。
-python rouge 只适用于英文，这里将中文映射到数字 id 再计算得分。
 
+**2. Rouge-2**
+
+**3. Rouge-L**
+
+**4. BLEU**
 
 ## 数据集介绍
 
@@ -41,14 +46,14 @@ python rouge 只适用于英文，这里将中文映射到数字 id 再计算得
 
 [运行结果](docs/csl.md)
 
-|         模型          | 验证集（val) | 测试集（test) |               训练参数              |
-| :-------------------: | :----------: |:----------: |  :--------------------------------: |
-|      ALBERT-tiny      |    54.45     | - |  batch_size=8, length=256, epoch=5, lr=1e-5  |
-|       BERT-base       |    66.69     | - |  batch_size=8, length=256, epoch=5, lr=1e-5  |
-|     BERT-wwm-ext      |    66.78     | - |  batch_size=8, length=256, epoch=10, lr=1e-5 |
-|    RoBERTa-wwm-ext    |    66.91     | - |  batch_size=8, length=256, epoch=10, lr=1e-5 |
-|   RoBERTa-wwm-large   |    68.10     | - |  batch_size=4, length=256, epoch=10, lr=1e-5 |
-|     LSTM-Seq2Seq      |    43.77     | - |  batch_size=64, length=256, epoch=10, lr=1e-3 |
+|         模型          | Rouge-L | Rouge-1 | Rouge-2 | BLEU |             训练参数              |
+| :-------------------: | :------: |:---: |:---: |:---: |  :--------------------------------: |
+|      ALBERT-tiny      |  -  | - | - | - |  batch_size=8, length=256, epoch=5, lr=1e-5  |
+|       BERT-base       |  59.76  | 63.83 | 51.29 | 41.45 |  batch_size=8, length=256, epoch=5, lr=1e-5  |
+|     BERT-wwm-ext      |  -  | - | - | - |  batch_size=8, length=256, epoch=10, lr=1e-5 |
+|    RoBERTa-wwm-ext    |  -  | - | - | - |  batch_size=8, length=256, epoch=10, lr=1e-5 |
+|   RoBERTa-wwm-large   |  -  | - | - | - |  batch_size=4, length=256, epoch=10, lr=1e-5 |
+|     LSTM-seq2seq      |  41.80  | 46.48 | 30.48 | 22.00 |  batch_size=64, length=256, epoch=10, lr=1e-3 |
 
 
 ### **2. LCSTS 短文本摘要生成**
@@ -68,14 +73,14 @@ https://arxiv.org/abs/1506.05865
 
 [运行结果](docs/lcsts.md)
 
-|         模型          | 验证集（val) | 测试集（test) |               训练参数              |
-| :-------------------: | :----------: |:----------: |  :--------------------------------: |
-|      ALBERT-tiny      |    31.49     | - |  batch_size=16, length=128, epoch=10, lr=1e-5  |
-|       BERT-base       |    35.59     | - |  batch_size=16, length=128, epoch=5, lr=1e-5  |
-|     BERT-wwm-ext      |    35.33     | - |  batch_size=16, length=128, epoch=5, lr=1e-5 |
-|    RoBERTa-wwm-ext    |    36.11     | - |  batch_size=16, length=128, epoch=5, lr=1e-5 |
-|   RoBERTa-wwm-large   |    35.05     | - |  batch_size=8, length=128, epoch=8, lr=1e-5  |
-|     LSTM-Seq2Seq      |    12.66     | - |  batch_size=64, length=128, epoch=5, lr=1e-3 |
+|         模型          | Rouge-L | Rouge-1 | Rouge-2 | BLEU |               训练参数              |
+| :-------------------: | :------: |:---: |:---: |:---: |  :--------------------------------: |
+|      ALBERT-tiny      |  -  | - | - | - |  batch_size=16, length=128, epoch=10, lr=1e-5  |
+|       BERT-base       |  -  | - | - | - |  batch_size=16, length=128, epoch=5, lr=1e-5  |
+|     BERT-wwm-ext      |  -  | - | - | - |  batch_size=16, length=128, epoch=5, lr=1e-5 |
+|    RoBERTa-wwm-ext    |  -  | - | - | - |  batch_size=16, length=128, epoch=5, lr=1e-5 |
+|   RoBERTa-wwm-large   |  -  | - | - | - |  batch_size=8, length=128, epoch=8, lr=1e-5  |
+|     LSTM-Seq2Seq      |  11.20  | 13.46 | 04.12 | 03.35 |  batch_size=64, length=128, epoch=5, lr=1e-3 |
 
 
 
@@ -99,13 +104,14 @@ https://arxiv.org/abs/1506.05865
 }
 ```
 
-|         模型          | 验证集（val) | 测试集（test) |               训练参数              |
-| :-------------------: | :----------: |:----------: |  :--------------------------------: |
-|      ALBERT-tiny      |    70.08     | - |  batch_size=8, epoch=5, lr=1e-5  |
-|       BERT-base       |    80.85     | - |  batch_size=4, epoch=5, lr=1e-5  |
-|     BERT-wwm-ext      |    83.36     | - |  batch_size=4, epoch=5, lr=1e-5 |
-|    RoBERTa-wwm-ext    |    85.85     | - |  batch_size=4, epoch=5, lr=1e-5 |
-|   RoBERTa-wwm-large   |    -     |  - | - |
+|         模型          | Rouge-L | Rouge-1 | Rouge-2 | BLEU |               训练参数              |
+| :-------------------: | :------: |:---: |:---: |:---: |  :--------------------------------: |
+|      ALBERT-tiny      |  -  | - | - | - |  batch_size=16, length=128, epoch=10, lr=1e-5  |
+|       BERT-base       |  -  | - | - | - |  batch_size=16, length=128, epoch=5, lr=1e-5  |
+|     BERT-wwm-ext      |  -  | - | - | - |  batch_size=16, length=128, epoch=5, lr=1e-5 |
+|    RoBERTa-wwm-ext    |  -  | - | - | - |  batch_size=16, length=128, epoch=5, lr=1e-5 |
+|   RoBERTa-wwm-large   |  -  | - | - | - |  batch_size=8, length=128, epoch=8, lr=1e-5  |
+
 
 ### 4. CSL 关键词生成
 Coming soom...

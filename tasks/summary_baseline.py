@@ -193,12 +193,13 @@ class Evaluate(keras.callbacks.Callback):
         rouge_2 /= total
         rouge_l /= total
         bleu /= total
-        return {
+        output = {
             'rouge-1': rouge_1,
             'rouge-2': rouge_2,
             'rouge-l': rouge_l,
             'bleu': bleu,
         }
+        print(output)
 
 
 config_path = args.config_path
