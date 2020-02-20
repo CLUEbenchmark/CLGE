@@ -21,13 +21,22 @@ Chinese Language Generation Evaluation 中文生成任务基准测评
 
 **1. Rouge-1**
 
-Rouge-L 根据生成文本和参考文本的最长公共子序列（LCS）得出分数。
+rouge-1 比较生成文本和参考文本之间的重叠词（字）数量
 
 **2. Rouge-2**
 
+rouge-2 比较生成文本和参考文本之间的 2-gram 重叠的数量
+
+
 **3. Rouge-L**
 
+rouge-l 根据生成文本和参考文本之间的最长公共子序列得出
+
 **4. BLEU**
+
+[Bilingual Evaluation Understudy](https://www.aclweb.org/anthology/P02-1040/)
+
+
 
 ## 数据集介绍
 
