@@ -13,6 +13,10 @@ from keras import backend as K
 from keras.callbacks import Callback
 from keras.optimizers import Adam
 import argparse
+from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
+
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--train_data_path',type=str, required=True, help='训练集路径')
 parser.add_argument('--val_data_path',type=str, required=True, help='验证集路径')
