@@ -78,7 +78,7 @@ python ../summary_baseline.py \
     --val_data_path=$GLUE_DATA_DIR/$TASK_NAME/val.tsv \
     --sample_path=$GLUE_DATA_DIR/$TASK_NAME/sample.tsv \
     --albert=False \
-    --epochs=30 \
+    --epochs=10 \
     --batch_size=16 \
     --lr=2e-5 \
     --topk=1 \
