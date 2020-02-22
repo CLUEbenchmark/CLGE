@@ -13,6 +13,9 @@ from keras import backend as K
 from keras.callbacks import Callback
 from keras.optimizers import Adam
 import argparse
+from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
+from nltk.translate.bleu_score import SmoothingFunction
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--train_data_path',type=str, required=True, help='训练集路径')
 parser.add_argument('--val_data_path',type=str, required=True, help='验证集路径')
@@ -451,7 +454,7 @@ def gen_sent(s, topk=3, maxlen=64):
     # 如果maxlen字都找不到<end>，直接返回
     return id2str(yid[np.argmax(scores)])
 
-
+smooth = SmoothingFunction()
 #s1 = u'夏天来临，皮肤在强烈紫外线的照射下，晒伤不可避免，因此，晒后及时修复显得尤为重要，否则可能会造成长期伤害。专家表示，选择晒后护肤品要慎重，芦荟凝胶是最安全，有效的一种选择，晒伤严重者，还请及时就医 。'
 #s2 = u'8月28日，网络爆料称，华住集团旗下连锁酒店用户数据疑似发生泄露。从卖家发布的内容看，数据包含华住旗下汉庭、禧玥、桔子、宜必思等10余个品牌酒店的住客信息。泄露的信息包括华住官网注册资料、酒店入住登记的身份信息及酒店开房记录，住客姓名、手机号、邮箱、身份证号、登录账号密码等。卖家对这个约5亿条数据打包出售。第三方安全平台威胁猎人对信息出售者提供的三万条数据进行验证，认为数据真实性非常高。当天下午，华住集 团发声明称，已在内部迅速开展核查，并第一时间报警。当晚，上海警方消息称，接到华住集团报案，警方已经介入调查。'
 #sp = u'针对现有的软件众包工人选择机制对工人间协同开发考虑不足的问题,在竞标模式的基础上提出一种基于活跃时间分组的软件众包工人选择机制。首先,基于活跃时间将众包工人划分为多个协同开发组;然后,根据组内工人开发能力和协同因子计算协同工作组权重;最后,选定权重最大的协同工作组为最优工作组,并根据模块复杂度为每个任务模块从该组内选择最适合的工人。实验结果表明,该机制相比能力优先选择方法在工人平均能力上仅有0. 57%的差距,同时因为保证了工人间的协同而使项目风险平均降低了32%,能有效指导需多人协同进行的众包软件任务的工人选择。'
@@ -471,15 +474,27 @@ class Evaluate(Callback):
             model.save_weights('./best_model.weights')
         if logs['val_loss'] <= self.lowest1:
             self.lowest1 = logs['val_loss']
-        rouge_scores = []
+        rouge_scoresl = []
+        rouge_scores1 = []
+        rouge_scores2 = []
+        bleu_scores = []
         for a,b in self.data.iterrows():
-            generated_title = str2id1(gen_sent(b[1], 3))
-            real_title = str2id1(b[0])
+            generated_title = gen_sent(b[1], 3)
+            real_title = b[0]
+
             token_title = " ".join( str(c) for c in real_title[:maxlen])
             token_gen_title = " ".join( str(c) for c in generated_title[:maxlen])
             rouge_score = rouge.get_scores(token_gen_title,token_title)
-            rouge_scores.append(rouge_score[0]['rouge-l']['f'])
-        print("rouge-l scores: ",np.mean(rouge_scores))
+            rouge_scoresl.append(rouge_score[0]['rouge-l']['f'])
+            rouge_scores1.append(rouge_score[0]['rouge-1']['f'])
+            rouge_scores2.append(rouge_score[0]['rouge-2']['f'])
+            bleu_scores.append(sentence_bleu(references=[token_title.split(' ')],
+                                  hypothesis=token_gen_title.split(' '),
+                                  smoothing_function=smooth.method1))
+        print("rouge-l scores: ",np.mean(rouge_scoresl))
+        print("rouge-1 scores: ",np.mean(rouge_scores1))
+        print("rouge-2 scores: ",np.mean(rouge_scores2))
+        print(" bleu   scores: ",np.mean(bleu_scores))
             
 
 evaluator = Evaluate()

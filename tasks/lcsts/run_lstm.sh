@@ -9,6 +9,15 @@ export GLUE_DATA_DIR=$CURRENT_DIR/../../CLGEdataset
 
 # check python package 
 
+check_nltk=`pip show nltk | grep "Version"`
+
+if [ ! -n "$check_nltk" ]; then
+  pip install nltk
+else
+  echo "nltk installed."
+fi
+
+
 check_keras_layer_normalization=`pip show keras_layer_normalization | grep "Version"`
 
 if [ ! -n "$check_keras_layer_normalization" ]; then
