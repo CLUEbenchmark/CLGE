@@ -46,7 +46,7 @@ if [ ! -f "train.tsv" ] || [ ! -f "val.tsv" ] ; then
   echo "Downloading data."
   curl --ftp-skip-pasv-ip ftp://114.115.129.128/CLGE/csl.zip > csl.zip
   unzip csl.zip
-  rm csl.zipelse
+  rm csl.zip
 fi
 echo "Dataset exists."
 
