@@ -16,7 +16,6 @@ import argparse
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 from nltk.translate.bleu_score import SmoothingFunction
 
-
 parser = argparse.ArgumentParser()
 parser.add_argument('--train_data_path',type=str, required=True, help='训练集路径')
 parser.add_argument('--val_data_path',type=str, required=True, help='验证集路径')
@@ -482,6 +481,7 @@ class Evaluate(Callback):
         for a,b in self.data.iterrows():
             generated_title = gen_sent(b[1], 3)
             real_title = b[0]
+
             token_title = " ".join( str(c) for c in real_title[:maxlen])
             token_gen_title = " ".join( str(c) for c in generated_title[:maxlen])
             rouge_score = rouge.get_scores(token_gen_title,token_title)
