@@ -471,15 +471,26 @@ class Evaluate(Callback):
             model.save_weights('./best_model.weights')
         if logs['val_loss'] <= self.lowest1:
             self.lowest1 = logs['val_loss']
-        rouge_scores = []
+        rouge_scoresl = []
+        rouge_scores1 = []
+        rouge_scores2 = []
+        bleu_scores = []
         for a,b in self.data.iterrows():
-            generated_title = str2id1(gen_sent(b[1], 3))
-            real_title = str2id1(b[0])
+            generated_title = gen_sent(b[1], 3)
+            real_title = b[0]
             token_title = " ".join( str(c) for c in real_title[:maxlen])
             token_gen_title = " ".join( str(c) for c in generated_title[:maxlen])
             rouge_score = rouge.get_scores(token_gen_title,token_title)
-            rouge_scores.append(rouge_score[0]['rouge-l']['f'])
-        print("rouge-l scores: ",np.mean(rouge_scores))
+            rouge_scoresl.append(rouge_score[0]['rouge-l']['f'])
+            rouge_scores1.append(rouge_score[0]['rouge-1']['f'])
+            rouge_scores2.append(rouge_score[0]['rouge-2']['f'])
+            bleu_scores.append(sentence_bleu(references=[token_title.split(' ')],
+                                  hypothesis=token_gen_title.split(' '),
+                                  smoothing_function=smooth.method1))
+        print("rouge-l scores: ",np.mean(rouge_scoresl))
+        print("rouge-1 scores: ",np.mean(rouge_scores1))
+        print("rouge-2 scores: ",np.mean(rouge_scores2))
+        print(" bleu   scores: ",np.mean(bleu_scores))
             
 
 evaluator = Evaluate()
