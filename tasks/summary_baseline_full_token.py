@@ -1,19 +1,14 @@
 import numpy as np
 import pandas as pd
-from tqdm import tqdm
-import os, json, codecs
-from collections import Counter
 from bert4keras.bert import build_bert_model
 from bert4keras.tokenizer import Tokenizer, load_vocab
 from keras.layers import *
-from keras.models import Model
 from keras import backend as K
-from keras.callbacks import Callback
 from keras.optimizers import Adam
 from rouge import Rouge
 import keras
 import math
-from sklearn.utils import shuffle
+from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 import argparse
 
 def boolean_string(s):
@@ -42,6 +37,7 @@ args = parser.parse_args()
 print('args:\n' + args.__repr__())
 
 def padding(x):
+
     """padding至batch内的最大长度
     """
     ml = max([len(i) for i in x])
@@ -167,23 +163,42 @@ def just_show():
 
 class Evaluate(keras.callbacks.Callback):
     def __init__(self, val_data_path, topk):
+        self.rouge = Rouge()
+        self.smooth = SmoothingFunction().method1
         self.data=pd.read_csv(val_data_path,sep = '\t',header=None,)
         self.lowest = 1e10
         self.topk = topk
 
     def on_epoch_end(self, epoch, logs=None):
         just_show()
-        
-        rouge_scores = []
+
+        total = 0
+        rouge_1, rouge_2, rouge_l, bleu = 0, 0, 0, 0
+
         for a,b in self.data.iterrows():
+            total += 1
             generated_title = gen_sent(b[1], self.topk)
             real_title = b[0]
-            token_title = " ".join([str(t) for t in tokenizer.encode(real_title)[0]])
-            token_gen_title = " ".join([str(t) for t in tokenizer.encode(generated_title)[0]])
-            rouge_score = rouge.get_scores(token_gen_title,token_title)
-            rouge_scores.append(rouge_score[0]['rouge-l']['f'])
-        print("rouge-l scores: ",np.mean(rouge_scores))
+            real_title = " ".join(real_title)
+            generated_title = " ".join(generated_title)
+            scores = self.rouge.get_scores(generated_title,real_title)
+            rouge_1 += scores[0]['rouge-1']['f']
+            rouge_2 += scores[0]['rouge-2']['f']
+            rouge_l += scores[0]['rouge-l']['f']
+            bleu += sentence_bleu(references=[real_title.split(' ')],
+                                  hypothesis=generated_title.split(' '),
+                                  smoothing_function=self.smooth)
 
+        rouge_1 /= total
+        rouge_2 /= total
+        rouge_l /= total
+        bleu /= total
+        return {
+            'rouge-1': rouge_1,
+            'rouge-2': rouge_2,
+            'rouge-l': rouge_l,
+            'bleu': bleu,
+        }
 
 
 config_path = args.config_path
@@ -209,7 +224,6 @@ tokenizer = Tokenizer(token_dict, do_lower_case=True) # 建立分词器
 
 sep_id = tokenizer.encode('')[0][-1]
 
-rouge = Rouge()        
 model = get_model(config_path, checkpoint_path, args.albert, args.lr)
 
 evaluator = Evaluate(val_data_path, topk)

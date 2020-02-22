@@ -31,6 +31,14 @@ else
   echo "rouge installed."
 fi
 
+check_nltk=`pip show nltk | grep "Version"`
+
+if [ ! -n "$check_nltk" ]; then
+  pip install nltk
+else
+  echo "nltk installed."
+fi
+
 # check dataset
 
 cd $GLUE_DATA_DIR/$TASK_NAME
@@ -69,7 +77,7 @@ fi
 # run task
 cd $CURRENT_DIR
 echo "Start running..."
-python ../summary_baseline_full_token.py \
+python ../summary_baseline.py \
     --dict_path=$BERT_BASE_DIR/vocab.txt \
     --config_path=$BERT_BASE_DIR/bert_config.json \
     --checkpoint_path=$BERT_BASE_DIR/bert_model.ckpt \
