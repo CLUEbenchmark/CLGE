@@ -5,7 +5,7 @@
 TASK_NAME="lcsts" 
 MODEL_NAME="chinese_wwm_ext_L-12_H-768_A-12"
 CURRENT_DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
-export CUDA_VISIBLE_DEVICES="1"
+export CUDA_VISIBLE_DEVICES="0"
 export BERT_PRETRAINED_MODELS_DIR=$CURRENT_DIR/../../prev_trained_model
 export BERT_BASE_DIR=$BERT_PRETRAINED_MODELS_DIR/$MODEL_NAME
 export GLUE_DATA_DIR=$CURRENT_DIR/../../CLGEdataset
