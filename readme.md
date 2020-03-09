@@ -60,7 +60,7 @@ rouge-l 根据生成文本和参考文本之间的最长公共子序列得出
 |      ALBERT-tiny      |  48.11  | 52.75 | 37.96 | 21.63 |  batch_size=8, length=256, epoch=10, lr=1e-5  |
 |       BERT-base       |  59.76  | 63.83 | 51.29 | 41.45 |  batch_size=8, length=256, epoch=10, lr=1e-5  |
 |     BERT-wwm-ext      |  59.40  | 63.44 | 51.00 | 41.19 |  batch_size=8, length=256, epoch=10, lr=1e-5 |
-|    RoBERTa-wwm-ext    |  -  | - | - | - |  batch_size=8, length=256, epoch=10, lr=1e-5 |
+|    RoBERTa-wwm-ext    |  58.99  | 63.23 | 50.74 | 41.31 |  batch_size=8, length=256, epoch=10, lr=1e-5 |
 |   RoBERTa-wwm-large   |  -  | - | - | - |  batch_size=4, length=256, epoch=10, lr=1e-5 |
 |     LSTM-seq2seq      |  41.80  | 46.48 | 30.48 | 22.00 |  batch_size=64, length=256, epoch=20, lr=1e-3 |
 
@@ -85,9 +85,9 @@ https://arxiv.org/abs/1506.05865
 |         模型          | Rouge-L | Rouge-1 | Rouge-2 | BLEU |               训练参数              |
 | :-------------------: | :------: |:---: |:---: |:---: |  :--------------------------------: |
 |      ALBERT-tiny      |  22.58  | 26.43 | 13.06 | 06.10 |  batch_size=16, length=128, epoch=10, lr=1e-5  |
-|       BERT-base       |  -  | - | - | - |  batch_size=16, length=128, epoch=10, lr=1e-5  |
+|       BERT-base       |  26.16  | 30.48 | 16.83 | 09.42 |  batch_size=16, length=128, epoch=10, lr=1e-5  |
 |     BERT-wwm-ext      |  -  | - | - | - |  batch_size=16, length=128, epoch=5, lr=1e-5 |
-|    RoBERTa-wwm-ext    |  -  | - | - | - |  batch_size=16, length=128, epoch=5, lr=1e-5 |
+|    RoBERTa-wwm-ext    |  26.41  | 30.35 | 17.49 | 10.73 |  batch_size=16, length=128, epoch=5, lr=1e-5 |
 |   RoBERTa-wwm-large   |  -  | - | - | - |  batch_size=8, length=128, epoch=8, lr=1e-5  |
 |     LSTM-Seq2Seq      |  11.20  | 13.46 | 04.12 | 03.35 |  batch_size=64, length=128, epoch=20, lr=1e-3 |
 
