@@ -2,7 +2,7 @@
 # @Author: Li Yudong
 # @Date:   2019-12-23
 
-TASK_NAME="csl" 
+TASK_NAME="afqmc" 
 MODEL_NAME="chinese_L-12_H-768_A-12"
 CURRENT_DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 export CUDA_VISIBLE_DEVICES="0"
@@ -14,13 +14,9 @@ export GLUE_DATA_DIR=$CURRENT_DIR/../../CLGEdataset
 check_bert4keras=`pip show bert4keras | grep "Version"`
 
 if [ ! -n "$check_bert4keras" ]; then
-  pip install git+https://www.github.com/bojone/bert4keras.git@v0.7.2
+  pip install git+https://www.github.com/bojone/bert4keras.git
 else
-  if [  ${check_bert4keras:8:13} = '0.7.2' ] ; then
-    echo "bert4keras installed."
-  else
-    pip install git+https://www.github.com/bojone/bert4keras.git@v0.7.2
-  fi
+  echo "bert4keras installed."
 fi
 
 # download model
@@ -49,7 +45,7 @@ fi
 # run task
 cd $CURRENT_DIR
 echo "Start running..."
-python ../summary_baseline.py \
+python ../data_augmented_baseline.py \
     --dict_path=$BERT_BASE_DIR/vocab.txt \
     --config_path=$BERT_BASE_DIR/bert_config.json \
     --checkpoint_path=$BERT_BASE_DIR/bert_model.ckpt \
@@ -57,6 +53,6 @@ python ../summary_baseline.py \
     --epochs=100 \
     --batch_size=48 \
     --lr=1e-5 \
-    --topk1=25 \ 
+    --topk1=25 \
     --topk2=4 \
     --max_seq_len=128 

@@ -16,6 +16,7 @@ from keras.layers import Input, Embedding, Reshape
 from keras.models import Model
 import pandas as pd
 import random
+import argparse
 
 def save_data(file,data,label):
     fp = open(file,'a+', encoding='utf-8')
@@ -222,3 +223,5 @@ def main():
 
 
 
+if __name__ == "__main__":
+    main()
