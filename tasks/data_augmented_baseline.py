@@ -46,8 +46,8 @@ def main():
     dict_path = args.dict_path
     batch_size = args.batch_size
     epochs = args.epochs
-	topk1 = args.topk1
-	topk2 = args.topk2
+    topk1 = args.topk1
+    topk2 = args.topk2
     num_classes = 2
     lr = args.lr
 
