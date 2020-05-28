@@ -19,10 +19,12 @@ Chinese Language Generation Evaluation 中文生成任务基准测评
 
 ## 文本生成方法
 
-1. lstm-seq2seq
+**1. lstm-seq2seq**
+
 参考：苏剑林. (2018, Sep 01). 《玩转Keras之seq2seq自动生成标题 》[Blog post]. Retrieved from https://spaces.ac.cn/archives/5861
 
-2. BERT-UNILM 方案
+**2. BERT-UNILM 方案**
+
 参考：苏剑林. (2019, Sep 18). 《从语言模型到Seq2Seq：Transformer如戏，全靠Mask 》[Blog post]. Retrieved from https://spaces.ac.cn/archives/6933
 
 ## 测评指标
