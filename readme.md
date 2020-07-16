@@ -9,10 +9,10 @@ Chinese Language Generation Evaluation 中文生成任务基准测评
 ```
 1、克隆项目 
    git clone --depth=1 https://github.com/CLUEbenchmark/CLGE.git
-2、进入到相应任务的目录
+2、下载任务数据集并解压至 CLGEdataset，进入到相应任务的目录
    例如运行 csl 任务
        cd CLGE/tasks/csl  
-3、运行对应任务的脚本: 会自动安装依赖、下载模型和数据集并开始运行。
+3、运行对应任务的脚本: 会自动安装依赖、下载模型并开始运行。
        sh run_bert_base.sh
    如运行 sh run_bert_base.sh 会开始 csl 任务在 BERT_base 上的训练
 ```
@@ -51,6 +51,7 @@ rouge-l 根据生成文本和参考文本之间的最长公共子序列得出
 ## 数据集介绍
 
 ### **1. CSL 中长文本摘要生成**
+[百度网盘](https://pan.baidu.com/s/1bPNKzw1ulEAaHfkFl_8Ejw) 提取码: 3hf2
 
 [中文科学文献数据(CSL)](https://github.com/P01son6415/chinese-scientific-literature-dataset)，选取 10k 条计算机相关领域论文及其标题作为训练集。
 
