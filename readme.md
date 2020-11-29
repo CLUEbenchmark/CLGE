@@ -37,7 +37,6 @@ rouge-1 比较生成文本和参考文本之间的重叠词（字）数量
 
 rouge-2 比较生成文本和参考文本之间的 2-gram 重叠的数量
 
-
 **3. Rouge-L**
 
 rouge-l 根据生成文本和参考文本之间的最长公共子序列得出
@@ -47,16 +46,15 @@ rouge-l 根据生成文本和参考文本之间的最长公共子序列得出
 [Bilingual Evaluation Understudy](https://www.aclweb.org/anthology/P02-1040/)
 
 
-
 ## 数据集介绍
 
 ### **1. CSL 中长文本摘要生成**
-[百度网盘](https://pan.baidu.com/s/1bPNKzw1ulEAaHfkFl_8Ejw) 提取码: 3hf2
+[百度网盘](https://pan.baidu.com/s/1FFG_s8z47r6e7EqoRtfIrw) 提取码: u6mc
 
 [中文科学文献数据(CSL)](https://github.com/P01son6415/chinese-scientific-literature-dataset)，选取 10k 条计算机相关领域论文及其标题作为训练集。
 
 ```
-数据量：训练集(10,000)，验证集(1,000)，测试集(1,000)
+数据量：训练集(3,000)，验证集(500)，测试集(500)
 示例：
 {
     title: 基于活跃时间分组的软件众包工人选择机制

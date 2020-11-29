@@ -14,12 +14,12 @@ export GLUE_DATA_DIR=$CURRENT_DIR/../../CLGEdataset
 check_bert4keras=`pip show bert4keras | grep "Version"`
 
 if [ ! -n "$check_bert4keras" ]; then
-  pip install git+https://www.github.com/bojone/bert4keras.git@v0.3.6
+  pip install git+https://www.github.com/bojone/bert4keras.git@v0.8.3
 else
-  if [  ${check_bert4keras:8:13} = '0.3.6' ] ; then
+  if [  ${check_bert4keras:8:13} = '0.8.3' ] ; then
     echo "bert4keras installed."
   else
-    pip install git+https://www.github.com/bojone/bert4keras.git@v0.3.6
+    pip install git+https://www.github.com/bojone/bert4keras.git@v0.8.3
   fi
 fi
 
@@ -39,17 +39,6 @@ else
   echo "nltk installed."
 fi
 
-# check dataset
-
-cd $GLUE_DATA_DIR/$TASK_NAME
-if [ ! -f "train.tsv" ] || [ ! -f "val.tsv" ] ; then
-  echo "Downloading data."
-  curl --ftp-skip-pasv-ip ftp://114.115.129.128/CLGE/csl.zip > csl.zip
-  unzip csl.zip
-  rm csl.zip
-else
-  echo "Dataset exists."
-fi
 
 # download model
 if [ ! -d $BERT_PRETRAINED_MODELS_DIR ]; then
@@ -77,17 +66,15 @@ fi
 # run task
 cd $CURRENT_DIR
 echo "Start running..."
-python ../summary_baseline.py \
+python ../autotitle_baseline.py \
     --dict_path=$BERT_BASE_DIR/vocab.txt \
     --config_path=$BERT_BASE_DIR/bert_config.json \
     --checkpoint_path=$BERT_BASE_DIR/bert_model.ckpt \
-    --train_data_path=$GLUE_DATA_DIR/$TASK_NAME/train.tsv \
-    --val_data_path=$GLUE_DATA_DIR/$TASK_NAME/val.tsv \
-    --sample_path=$GLUE_DATA_DIR/$TASK_NAME/sample.tsv \
-    --albert=False \
+    --train_path=$GLUE_DATA_DIR/$TASK_NAME/csl_title_train.json \
+    --dev_path=$GLUE_DATA_DIR/$TASK_NAME/csl_title_val.json \
+    --test_path=$GLUE_DATA_DIR/$TASK_NAME/csl_title_test.json \
+    --test_path=prediction.json \
     --epochs=10 \
     --batch_size=8 \
-    --lr=1e-5 \
     --topk=1 \
-    --max_input_len=256 \
-    --max_output_len=32
+    --maxlen=256 \
